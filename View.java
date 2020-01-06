@@ -13,6 +13,9 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
+import java.util.HashMap;
+
 public class View extends Application {
 
     public static String[] args;
@@ -22,6 +25,7 @@ public class View extends Application {
     protected static final int WIDTH = 1000;
     protected static final int BOARD_SIZE = 700;
 
+    protected Controller controller;
     protected GridPane grid;
     protected int n = 8;
     protected Pane surfacePane;
@@ -38,6 +42,8 @@ public class View extends Application {
         drop.setPrefSize(this.getSize(), this.getSize());
 
         this.grid.add(drop, i, j);
+
+        this.controller.addField(new Point(i + 1, j + 1), drop);
     }
 
     protected void setupFields() {
@@ -59,8 +65,6 @@ public class View extends Application {
 
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
-
-        this.setupFields();
 
         this.surfacePane.getChildren().add(this.grid);
     }
@@ -116,13 +120,17 @@ public class View extends Application {
 
         this.surfacePane.setOnMouseClicked(e -> this.rotate()); // TODO: Remove this
 
+        this.controller = new Controller(this, this.n, this.grid);
+
+        this.setupFields();
+
+        this.controller.setupPieces();
+
         Scene scene = new Scene(root);
         scene.setCamera(new PerspectiveCamera());
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        new Controller(this, this.n, this.grid);
     }
 
     public void rotate() {

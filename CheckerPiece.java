@@ -24,16 +24,11 @@ public class CheckerPiece {
         this.setupPiece();
     }
 
-    public void attachToGrid(GridPane pane) {
-        pane.add(this.getPane(), this.position.x - 1, this.position.y - 1);
-    }
-
-    public void setPosition(Point position, HashMap<Point, CheckerPiece> occupiedPositions) {
-        occupiedPositions.remove(this.position);
-
+    public void attachToField(HashMap<String, StackPane> fields, Point position) {
         this.position = position;
 
-        occupiedPositions.put(this.position, this);
+        StackPane drop = fields.get(position.toString());
+        drop.getChildren().add(this.getPane());
     }
 
     public void setupEvent(Controller controller) {

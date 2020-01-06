@@ -1,4 +1,5 @@
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
@@ -7,9 +8,9 @@ import java.util.HashMap;
 
 public class Controller {
 
+    protected HashMap<String, StackPane> fields = new HashMap<>();
     protected GridPane grid;
     protected int n;
-    protected HashMap<Point, CheckerPiece> occupiedPoints = new HashMap<>();
     protected CheckerPiece selectedPiece = null;
     protected View view;
 
@@ -18,12 +19,19 @@ public class Controller {
         WHITE
     }
 
-    protected void highlightEligibleFields(Point position) {
+    protected void highlightEligibleFields(CheckerPiece piece) {
         ArrayList<Point> possibleJumpMoves = new ArrayList<>();
         ArrayList<Point> possibleRegularMoves = new ArrayList<>();
 
-        for(Point p : this.surroundingFields(position)) {
+        for(Point p : this.surroundingFields(piece.getPosition())) {
+            String stringPoint = p.toString();
+            StackPane pane = this.fields.get(stringPoint);
 
+            if(pane.getChildren().size() > 0) {
+                System.out.println(stringPoint + " occupied!");
+            } else {
+                System.out.println(stringPoint + " free!");
+            }
         }
     }
 
@@ -46,11 +54,10 @@ public class Controller {
         return eligiblePoints;
     }
 
-    protected void setupPiece(int i, int j, Team team) {
+    public void setupPiece(int i, int j, Team team) {
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
 
-        piece.setPosition(new Point(i + 1, j + 1), this.occupiedPoints);
-        piece.attachToGrid(this.grid);
+        piece.attachToField(this.fields, new Point(i + 1, j + 1));
         piece.setupEvent(this);
     }
 
@@ -63,8 +70,10 @@ public class Controller {
         this.grid = grid;
         this.n = n;
         this.view = view;
+    }
 
-        this.setupPieces();
+    public void addField(Point p, StackPane pane) {
+        this.fields.put(p.toString(), pane);
     }
 
     public void setSelectedPiece(CheckerPiece piece) {
@@ -78,7 +87,7 @@ public class Controller {
             this.selectedPiece = piece;
             this.selectedPiece.changePieceColor(Color.LIMEGREEN);
 
-            this.highlightEligibleFields(this.selectedPiece.getPosition());
+            this.highlightEligibleFields(this.selectedPiece);
             return;
         }
 
