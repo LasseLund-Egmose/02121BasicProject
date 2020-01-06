@@ -25,7 +25,7 @@ public class View extends Application {
         box.setWidth(700.0);
         box.setHeight(700.0);
         box.setDepth(10.0);
-        box.setMaterial(new PhongMaterial(Color.RED));
+        box.setMaterial(new PhongMaterial(Color.GRAY));
 
         StackPane.setAlignment(box, Pos.CENTER);
 
