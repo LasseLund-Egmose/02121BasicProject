@@ -8,16 +8,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class View extends Application {
 
-    protected static Pane getSurface() {
-        StackPane pane = new StackPane();
+    protected Pane surfacePane;
+    protected RotateTransition surfacePaneRotation;
 
+    protected void setupSurface() {
+        this.surfacePane = new StackPane();
+
+        // Setup board surface
         Box box = new Box();
         box.setWidth(700.0);
         box.setHeight(700.0);
@@ -26,38 +29,16 @@ public class View extends Application {
 
         StackPane.setAlignment(box, Pos.CENTER);
 
-        //Instantiating RotateTransition class
-        RotateTransition rotate = new RotateTransition();
+        // Setup rotation
+        this.surfacePaneRotation = new RotateTransition();
+        this.surfacePaneRotation.setAxis(Rotate.Z_AXIS);
+        this.surfacePaneRotation.setByAngle(180);
+        this.surfacePaneRotation.setCycleCount(1);
+        this.surfacePaneRotation.setDuration(Duration.millis(1000));
+        this.surfacePaneRotation.setAutoReverse(false);
+        this.surfacePaneRotation.setNode(this.surfacePane);
 
-        //Setting Axis of rotation
-        rotate.setAxis(Rotate.Z_AXIS);
-
-        // setting the angle of rotation
-        rotate.setByAngle(180);
-
-        pane.setOnMouseClicked( e ->{
-            rotate.play();
-        });
-        //setting cycle count of the rotation
-        rotate.setCycleCount(1);
-
-        //Setting duration of the transition
-        rotate.setDuration(Duration.millis(1000));
-
-        //the transition will be auto reversed by setting this to true
-        rotate.setAutoReverse(false);
-
-        //setting Rectangle as the node onto which the
-// transition will be applied
-        rotate.setNode(pane);
-
-        pane.getChildren().add(box);
-        return pane;
-    }
-
-    protected static void setupRotation(Pane pane) {
-
-
+        this.surfacePane.getChildren().add(box);
     }
 
     @Override
@@ -69,15 +50,22 @@ public class View extends Application {
         root.setRotationAxis(Rotate.X_AXIS);
         root.setRotate(-50);
 
-        Pane surface = View.getSurface();
-        root.getChildren().add(surface);
-        StackPane.setAlignment(surface, Pos.CENTER);
+        this.setupSurface();
+
+        root.getChildren().add(this.surfacePane);
+        StackPane.setAlignment(this.surfacePane, Pos.CENTER);
+
+        this.surfacePane.setOnMouseClicked(e -> this.rotate()); // TODO: Remove this
 
         Scene scene = new Scene(root);
         scene.setCamera(new PerspectiveCamera());
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void rotate() {
+        this.surfacePaneRotation.play();
     }
 
     public static void main(String[] args) {
