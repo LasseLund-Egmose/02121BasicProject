@@ -1,6 +1,8 @@
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
+
 public class Controller {
 
     protected GridPane grid;
@@ -16,9 +18,9 @@ public class Controller {
     protected void setupPiece(int i, int j, Team team) {
         Color pieceColor = team == Team.BLACK ? Color.BLACK : Color.WHITE;
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), pieceColor);
-        piece.setupEvent(this);
 
-        this.grid.add(piece.getPane(), i, j);
+        piece.attachToGrid(this.grid, new Point(i + 1, j + 1));
+        piece.setupEvent(this);
     }
 
     protected void setupPieces() {
