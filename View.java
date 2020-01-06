@@ -27,19 +27,22 @@ public class View extends Application {
     protected Pane surfacePane;
     protected RotateTransition surfacePaneRotation;
 
+    public double getSize() {
+        return ((double) View.BOARD_SIZE) / this.n;
+    }
+
     protected void setupField(int i, int j) {
         StackPane drop = new StackPane();
-        drop.setStyle("-fx-background-color: #000");
+        drop.setStyle("-fx-background-color: #744300");
 
-        double size = ((double) View.BOARD_SIZE) / this.n;
-        drop.setPrefSize(size, size);
+        drop.setPrefSize(this.getSize(), this.getSize());
 
         this.grid.add(drop, i, j);
     }
 
     protected void setupFields() {
         for(int i = 0; i < n; i++) {
-            for(int j = (i + 1) % 2; j < n; j += 2) {
+            for(int j = i % 2; j < n; j += 2) {
                 this.setupField(i, j);
             }
         }
@@ -54,6 +57,9 @@ public class View extends Application {
         this.grid.setMaxWidth(View.BOARD_SIZE);
         this.grid.setTranslateZ(-View.DEPTH / 2.0);
 
+        this.grid.setRotationAxis(Rotate.X_AXIS);
+        this.grid.setRotate(180);
+
         this.setupFields();
 
         this.surfacePane.getChildren().add(this.grid);
@@ -67,7 +73,7 @@ public class View extends Application {
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
-        box.setMaterial(new PhongMaterial(Color.GRAY));
+        box.setMaterial(new PhongMaterial(Color.web("#ffba5c")));
 
         StackPane.setAlignment(box, Pos.CENTER);
 
