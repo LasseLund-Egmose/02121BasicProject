@@ -7,26 +7,33 @@ import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class CheckerPiece {
 
-    protected Color color;
     protected StackPane pane;
     protected Point position;
     protected double size;
+    protected Controller.Team team;
     protected Cylinder cylinder;
 
-    public CheckerPiece(double size, Color color) {
-        this.color = color;
+    public CheckerPiece(double size, Controller.Team team) {
         this.size = size;
+        this.team = team;
 
         this.setupPiece();
     }
 
-    public void attachToGrid(GridPane pane, Point position) {
+    public void attachToGrid(GridPane pane) {
+        pane.add(this.getPane(), this.position.x - 1, this.position.y - 1);
+    }
+
+    public void setPosition(Point position, HashMap<Point, CheckerPiece> occupiedPositions) {
+        occupiedPositions.remove(this.position);
+
         this.position = position;
 
-        pane.add(this.getPane(), position.x - 1, position.y - 1);
+        occupiedPositions.put(this.position, this);
     }
 
     public void setupEvent(Controller controller) {
@@ -44,6 +51,10 @@ public class CheckerPiece {
 
         this.pane = new StackPane();
         this.pane.getChildren().add(this.cylinder);
+    }
+
+    protected Point getPosition() {
+        return this.position;
     }
 
     protected Pane getPane() {
