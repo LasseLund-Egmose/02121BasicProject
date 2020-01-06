@@ -44,7 +44,7 @@ public class CheckerPiece {
 
     protected void setupPiece() {
         this.cylinder = new Cylinder((this.size * 2) / 5, 8);
-        this.cylinder.setMaterial(new PhongMaterial(this.color));
+        this.cylinder.setMaterial(new PhongMaterial(this.getColor()));
         this.cylinder.setRotationAxis(Rotate.X_AXIS);
         this.cylinder.setRotate(90);
         this.cylinder.setTranslateZ(4);
@@ -62,7 +62,7 @@ public class CheckerPiece {
     }
 
     public Color getColor() {
-        return this.color;
+        return team == Controller.Team.BLACK ? Color.BLACK : Color.WHITE;
     }
 
     public void changePieceColor(Color color) {

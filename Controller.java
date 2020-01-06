@@ -1,4 +1,5 @@
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,9 +10,8 @@ public class Controller {
     protected GridPane grid;
     protected int n;
     protected HashMap<Point, CheckerPiece> occupiedPoints = new HashMap<>();
-    protected CheckerPiece selectedPiece;
-    protected View view;
     protected CheckerPiece selectedPiece = null;
+    protected View view;
 
     enum Team {
         BLACK,
@@ -68,17 +68,21 @@ public class Controller {
     }
 
     public void setSelectedPiece(CheckerPiece piece) {
+        // TODO: de-highlight fields here
+
         if (this.selectedPiece != null) {
             this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
         }
-        if (this.selectedPiece == piece) {
-            this.selectedPiece = null;
-        } else {
+
+        if (this.selectedPiece != piece) {
             this.selectedPiece = piece;
             this.selectedPiece.changePieceColor(Color.LIMEGREEN);
+
+            this.highlightEligibleFields(this.selectedPiece.getPosition());
+            return;
         }
 
-        this.highlightEligibleFields(this.selectedPiece.getPosition());
+        this.selectedPiece = null;
     }
 
     public CheckerPiece getSelectedPiece() {
