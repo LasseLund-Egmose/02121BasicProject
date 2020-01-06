@@ -6,7 +6,7 @@ public class Controller {
     protected GridPane grid;
     protected int n;
     protected View view;
-    protected CheckerPiece selectedPiece;
+    protected CheckerPiece selectedPiece = null;
 
     enum Team {
         BLACK,
@@ -35,7 +35,15 @@ public class Controller {
     }
 
     public void setSelectedPiece(CheckerPiece piece) {
-        this.selectedPiece = piece;
+        if (this.selectedPiece != null) {
+            this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
+        }
+        if (this.selectedPiece == piece) {
+            this.selectedPiece = null;
+        } else {
+            this.selectedPiece = piece;
+            this.selectedPiece.changePieceColor(Color.LIMEGREEN);
+        }
     }
 
     public CheckerPiece getSelectedPiece() {

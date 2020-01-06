@@ -10,6 +10,7 @@ public class CheckerPiece {
     protected Color color;
     protected StackPane pane;
     protected double size;
+    protected Cylinder cylinder;
 
     public CheckerPiece(double size, Color color) {
         this.color = color;
@@ -19,24 +20,32 @@ public class CheckerPiece {
     }
 
     public void setupEvent(Controller controller) {
-        this.pane.setOnMousePressed( e -> {
+        this.pane.setOnMouseClicked( e -> {
             controller.setSelectedPiece(this);
         });
     }
 
     protected void setupPiece() {
-        Cylinder cylinder = new Cylinder((this.size * 2) / 5, 8);
-        cylinder.setMaterial(new PhongMaterial(this.color));
-        cylinder.setRotationAxis(Rotate.X_AXIS);
-        cylinder.setRotate(90);
-        cylinder.setTranslateZ(4);
+        this.cylinder = new Cylinder((this.size * 2) / 5, 8);
+        this.cylinder.setMaterial(new PhongMaterial(this.color));
+        this.cylinder.setRotationAxis(Rotate.X_AXIS);
+        this.cylinder.setRotate(90);
+        this.cylinder.setTranslateZ(4);
 
         this.pane = new StackPane();
-        this.pane.getChildren().add(cylinder);
+        this.pane.getChildren().add(this.cylinder);
     }
 
     public Pane getPane() {
         return this.pane;
+    }
+
+    public Color getColor() {
+        return this.color;
+    }
+
+    public void changePieceColor(Color color) {
+        this.cylinder.setMaterial(new PhongMaterial(color));
     }
 
 }
