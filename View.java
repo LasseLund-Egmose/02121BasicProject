@@ -115,6 +115,8 @@ public class View extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        new Controller(this, this.n, this.grid);
     }
 
     public void rotate() {
