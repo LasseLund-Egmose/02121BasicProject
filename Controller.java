@@ -6,6 +6,7 @@ public class Controller {
     protected GridPane grid;
     protected int n;
     protected View view;
+    protected CheckerPiece selectedPiece;
 
     enum Team {
         BLACK,
@@ -15,6 +16,7 @@ public class Controller {
     protected void setupPiece(int i, int j, Team team) {
         Color pieceColor = team == Team.BLACK ? Color.BLACK : Color.WHITE;
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), pieceColor);
+        piece.setupEvent(this);
 
         this.grid.add(piece.getPane(), i, j);
     }
@@ -30,6 +32,14 @@ public class Controller {
         this.view = view;
 
         this.setupPieces();
+    }
+
+    public void setSelectedPiece(CheckerPiece piece) {
+        this.selectedPiece = piece;
+    }
+
+    public CheckerPiece getSelectedPiece() {
+        return this.selectedPiece;
     }
 
 

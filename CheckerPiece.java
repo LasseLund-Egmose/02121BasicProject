@@ -18,11 +18,18 @@ public class CheckerPiece {
         this.setupPiece();
     }
 
+    public void setupEvent(Controller controller) {
+        this.pane.setOnMousePressed( e -> {
+            controller.setSelectedPiece(this);
+        });
+    }
+
     protected void setupPiece() {
         Cylinder cylinder = new Cylinder((this.size * 2) / 5, 8);
         cylinder.setMaterial(new PhongMaterial(this.color));
         cylinder.setRotationAxis(Rotate.X_AXIS);
         cylinder.setRotate(90);
+        cylinder.setTranslateZ(4);
 
         this.pane = new StackPane();
         this.pane.getChildren().add(cylinder);
@@ -31,4 +38,5 @@ public class CheckerPiece {
     public Pane getPane() {
         return this.pane;
     }
+
 }
