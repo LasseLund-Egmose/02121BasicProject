@@ -1,3 +1,4 @@
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -5,10 +6,13 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
 
+import java.awt.*;
+
 public class CheckerPiece {
 
     protected Color color;
     protected StackPane pane;
+    protected Point position;
     protected double size;
 
     public CheckerPiece(double size, Color color) {
@@ -16,6 +20,12 @@ public class CheckerPiece {
         this.size = size;
 
         this.setupPiece();
+    }
+
+    public void attachToGrid(GridPane pane, Point position) {
+        this.position = position;
+
+        pane.add(this.getPane(), position.x - 1, position.y - 1);
     }
 
     public void setupEvent(Controller controller) {
@@ -35,7 +45,7 @@ public class CheckerPiece {
         this.pane.getChildren().add(cylinder);
     }
 
-    public Pane getPane() {
+    protected Pane getPane() {
         return this.pane;
     }
 
