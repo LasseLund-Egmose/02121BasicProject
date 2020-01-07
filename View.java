@@ -3,9 +3,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -14,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
-import java.util.HashMap;
 
 public class View extends Application {
 
@@ -36,11 +33,11 @@ public class View extends Application {
     }
 
     public static void highlightPane(StackPane pane) {
-        pane.setStyle("-fx-border-color: black");
+        pane.setStyle("-fx-background-color: #744300; -fx-border-color: green; -fx-border-width: 5;");
     }
 
     public static void normalizePane(StackPane pane) {
-
+        pane.setStyle("-fx-background-color: #744300");
     }
 
     protected void setupField(int i, int j) {
@@ -50,6 +47,7 @@ public class View extends Application {
         drop.setPrefSize(this.getSize(), this.getSize());
 
         this.grid.add(drop, i, j);
+        drop.toFront();
 
         this.controller.addField(new Point(i + 1, j + 1), drop);
     }
@@ -73,6 +71,8 @@ public class View extends Application {
 
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
+
+        this.grid.setStyle("-fx-background-color: #ffba5c");
 
         this.surfacePane.getChildren().add(this.grid);
     }
