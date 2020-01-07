@@ -122,7 +122,8 @@ public class View extends Application {
 
         primaryStage.setTitle("Checkers");
         StackPane root = new StackPane();
-        root.setPrefSize(View.WIDTH, View.HEIGHT);
+        root.setMinSize(View.WIDTH, View.HEIGHT);
+        root.setMaxSize(View.WIDTH, View.HEIGHT);
 
         root.setRotationAxis(Rotate.X_AXIS);
         root.setRotate(-50);

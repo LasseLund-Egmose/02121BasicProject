@@ -2,7 +2,6 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class Controller {
     protected void doRegularMove(StackPane toPane) {
         this.getSelectedPiece().attachToFieldByPane(this.fields, toPane);
 
-        this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
+        this.selectedPiece.assertHighlight(false);
 
         this.normalizeFields();
 
@@ -55,14 +54,14 @@ public class Controller {
     }
 
     protected void finishTurn() {
-        // TODO: Finish turn and check for win
+        this.view.rotate();
     }
 
     protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
         Point thisPos = thisPiece.getPosition();
         Point diff = new Point(opponentPosition.x - thisPos.x, opponentPosition.y - thisPos.y);
 
-        Point newPos = ((Point) opponentPosition.clone());
+        Point newPos = (Point) opponentPosition.clone();
         newPos.translate(diff.x, diff.y);
 
         return this.isPositionValid(newPos) ? fields.get(newPos.x).get(newPos.y) : null;
@@ -170,20 +169,19 @@ public class Controller {
     }
 
     public void setSelectedPiece(CheckerPiece piece) {
-        this.normalizeFields();
-
         if (this.selectedPiece != null) {
-            this.selectedPiece.changePieceMaterial(this.selectedPiece.getMaterial());
+            this.selectedPiece.assertHighlight(false);
         }
 
         if (this.selectedPiece != piece) {
             this.selectedPiece = piece;
-            this.selectedPiece.changePieceColor(Color.LIMEGREEN);
+            this.selectedPiece.assertHighlight(true);
 
             this.highlightEligibleFields(this.selectedPiece);
             return;
         }
 
+        this.normalizeFields();
         this.selectedPiece = null;
     }
 

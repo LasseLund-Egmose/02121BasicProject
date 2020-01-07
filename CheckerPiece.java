@@ -1,5 +1,4 @@
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -25,6 +24,15 @@ public class CheckerPiece {
         this.team = team;
 
         this.setupPiece();
+    }
+
+    public void assertHighlight(boolean shouldHighlight) {
+        if(shouldHighlight) {
+            this.cylinder.setMaterial(new PhongMaterial(Color.LIMEGREEN));
+            return;
+        }
+
+        this.cylinder.setMaterial(this.getMaterial());
     }
 
     public void attachToField(StackPane pane, Point position) {
@@ -81,7 +89,7 @@ public class CheckerPiece {
 
     protected void setupPiece() {
         this.cylinder = new Cylinder((this.size * 2) / 5, 8);
-        this.cylinder.setMaterial((this.getMaterial()));
+        this.cylinder.setMaterial(this.getMaterial());
         this.cylinder.setRotationAxis(Rotate.X_AXIS);
         this.cylinder.setRotate(90);
         this.cylinder.setTranslateZ(4);
@@ -105,14 +113,6 @@ public class CheckerPiece {
         materialLight.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/2light_Marble_Texture.jpg")));
 
         return team == Controller.Team.BLACK ? materialDark : materialLight;
-    }
-
-    public void changePieceColor(Color color) {
-        this.cylinder.setMaterial(new PhongMaterial(color));
-    }
-
-    public void changePieceMaterial(PhongMaterial material) {
-        this.cylinder.setMaterial(material);
     }
 
 
