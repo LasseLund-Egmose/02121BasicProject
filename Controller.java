@@ -1,3 +1,5 @@
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -10,6 +12,7 @@ public class Controller {
 
     protected HashMap<String, StackPane> fields = new HashMap<>();
     protected GridPane grid;
+    protected EventHandler<MouseEvent> moveClickEventHandler;
     protected int n;
     protected ArrayList<StackPane> possibleJumpMoves = new ArrayList<>();
     protected ArrayList<StackPane> possibleRegularMoves = new ArrayList<>();
@@ -65,6 +68,28 @@ public class Controller {
         }
     }
 
+    protected void onFieldClick(Object clickedElement) {
+        System.out.println(clickedElement);
+
+        if(!(clickedElement instanceof StackPane)) {
+            return;
+        }
+
+        System.out.println("Clicked field");
+    }
+
+    protected void setupPiece(int i, int j, Team team) {
+        CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
+
+        piece.attachToField(this.fields, new Point(i + 1, j + 1));
+        piece.setupEvent(this);
+    }
+
+    protected void setupPieces() {
+        this.setupPiece(3, 3, Team.WHITE);
+        this.setupPiece(this.n - 4, this.n - 4, Team.BLACK);
+    }
+
     protected ArrayList<Point> surroundingFields(Point p) {
         ArrayList<Point> eligiblePoints = new ArrayList<>();
         Point[] points = new Point[] {
@@ -84,25 +109,16 @@ public class Controller {
         return eligiblePoints;
     }
 
-    public void setupPiece(int i, int j, Team team) {
-        CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
-
-        piece.attachToField(this.fields, new Point(i + 1, j + 1));
-        piece.setupEvent(this);
-    }
-
-    protected void setupPieces() {
-        this.setupPiece(3, 3, Team.WHITE);
-        this.setupPiece(this.n - 4, this.n - 4, Team.BLACK);
-    }
-
     public Controller(View view, int n, GridPane grid) {
         this.grid = grid;
+        this.moveClickEventHandler = mouseEvent -> this.onFieldClick(mouseEvent.getSource());
         this.n = n;
         this.view = view;
     }
 
     public void addField(Point p, StackPane pane) {
+        pane.addEventFilter(MouseEvent.MOUSE_PRESSED, this.moveClickEventHandler);
+
         this.fields.put(p.toString(), pane);
     }
 
