@@ -35,6 +35,14 @@ public class View extends Application {
         return ((double) View.BOARD_SIZE) / this.n;
     }
 
+    public static void highlightPane(StackPane pane) {
+        pane.setStyle("-fx-border-color: black");
+    }
+
+    public static void normalizePane(StackPane pane) {
+
+    }
+
     protected void setupField(int i, int j) {
         StackPane drop = new StackPane();
         drop.setStyle("-fx-background-color: #744300");

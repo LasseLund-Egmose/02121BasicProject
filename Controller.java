@@ -48,6 +48,9 @@ public class Controller {
         }
 
         // TODO: Highlight possibleJumpMoves & possibleRegularMoves
+        for(int i = 0; i < this.possibleRegularMoves.size(); i++) {
+            View.highlightPane(this.possibleRegularMoves.get(i));
+        }
     }
 
     protected boolean isPositionValid(Point p) {
