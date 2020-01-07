@@ -75,8 +75,9 @@ public class View extends Application {
         this.grid.setRotate(180);
 
         this.grid.setStyle("-fx-background-image: url(/assets/light_Marble_Texture.jpg); -fx-background-size: cover;");
-
+        
         this.surfacePane.getChildren().add(this.grid);
+
     }
 
     protected void setupSurface() {
