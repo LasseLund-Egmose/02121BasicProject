@@ -21,14 +21,14 @@ public class Controller {
         WHITE
     }
 
-    protected boolean checkJumpMove(CheckerPiece thisPiece, Point opponentPosition) {
+    protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
         Point thisPos = thisPiece.getPosition();
         Point diff = new Point(opponentPosition.x - thisPos.x, opponentPosition.y - thisPos.y);
 
         Point newPos = ((Point) opponentPosition.clone());
         newPos.translate(diff.x, diff.y);
 
-        return this.isPositionValid(newPos);
+        return this.isPositionValid(newPos) ? fields.get(newPos.toString()) : null;
     }
 
     protected void highlightEligibleFields(CheckerPiece piece) {
@@ -37,19 +37,17 @@ public class Controller {
             StackPane pane = this.fields.get(stringPoint);
 
             if(pane.getChildren().size() > 0) {
-                boolean jumpMoveEligible = this.checkJumpMove(piece, p);
+                Object eligibleJumpMove = this.eligibleJumpMoveOrNull(piece, p);
 
-                if(jumpMoveEligible) {
-                    this.possibleJumpMoves.add(pane);
+                if(eligibleJumpMove instanceof StackPane) {
+                    StackPane eligibleJumpMovePane = (StackPane) eligibleJumpMove;
+                    this.possibleJumpMoves.add(eligibleJumpMovePane);
+                    View.highlightPane(eligibleJumpMovePane);
                 }
             } else {
                 this.possibleRegularMoves.add(pane);
+                View.highlightPane(pane);
             }
-        }
-
-        // TODO: Highlight possibleJumpMoves & possibleRegularMoves
-        for(int i = 0; i < this.possibleRegularMoves.size(); i++) {
-            View.highlightPane(this.possibleRegularMoves.get(i));
         }
     }
 
@@ -57,8 +55,14 @@ public class Controller {
         return p.x >= 1 && p.y >= 1 && p.x <= this.n && p.y <= this.n;
     }
 
-    protected void normalizeEligibleFields() {
-        // TODO: Normalize possibleJumpMoves & possibleRegularMoves
+    protected void normalizeFields() {
+        ArrayList<StackPane> allHighlightedPanes = new ArrayList<>();
+        allHighlightedPanes.addAll(this.possibleJumpMoves);
+        allHighlightedPanes.addAll(this.possibleRegularMoves);
+
+        for(StackPane p : allHighlightedPanes) {
+            View.normalizePane(p);
+        }
     }
 
     protected ArrayList<Point> surroundingFields(Point p) {
@@ -103,7 +107,7 @@ public class Controller {
     }
 
     public void setSelectedPiece(CheckerPiece piece) {
-        // TODO: de-highlight fields here
+        this.normalizeFields();
 
         if (this.selectedPiece != null) {
             this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
