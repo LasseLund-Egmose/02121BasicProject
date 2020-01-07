@@ -10,18 +10,52 @@ import java.util.HashMap;
 
 public class Controller {
 
-    protected HashMap<String, StackPane> fields = new HashMap<>();
+    protected ArrayList<CheckerPiece> checkerPieces = new ArrayList<>(); // A list of all pieces
+    protected HashMap<Integer, HashMap<Integer, StackPane>> fields = new HashMap<>(); // A map (x -> y -> pane) of all dark fields (StackPanes)
+    protected HashMap<StackPane, Point> possibleJumpMoves = new HashMap<>(); // A map (pane -> jumped position) of all possible jump moves
+    protected ArrayList<StackPane> possibleRegularMoves = new ArrayList<>(); // A list of all possible regular moves
+
     protected GridPane grid;
     protected EventHandler<MouseEvent> moveClickEventHandler;
     protected int n;
-    protected ArrayList<StackPane> possibleJumpMoves = new ArrayList<>();
-    protected ArrayList<StackPane> possibleRegularMoves = new ArrayList<>();
     protected CheckerPiece selectedPiece = null;
     protected View view;
 
     enum Team {
         BLACK,
         WHITE
+    }
+
+    protected void doJumpMove(StackPane toPane, Point jumpedPosition) {
+        for(CheckerPiece piece : this.checkerPieces) {
+            if(!piece.getPosition().equals(jumpedPosition)) {
+                continue;
+            }
+
+            piece.detach();
+
+            break;
+        }
+
+        this.doRegularMove(toPane);
+    }
+
+    protected void doRegularMove(StackPane toPane) {
+        this.getSelectedPiece().attachToFieldByPane(this.fields, toPane);
+
+        this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
+
+        this.normalizeFields();
+
+        this.selectedPiece = null;
+        this.possibleJumpMoves.clear();
+        this.possibleRegularMoves.clear();
+
+        this.finishTurn();
+    }
+
+    protected void finishTurn() {
+        // TODO: Finish turn and check for win
     }
 
     protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
@@ -31,20 +65,19 @@ public class Controller {
         Point newPos = ((Point) opponentPosition.clone());
         newPos.translate(diff.x, diff.y);
 
-        return this.isPositionValid(newPos) ? fields.get(newPos.toString()) : null;
+        return this.isPositionValid(newPos) ? fields.get(newPos.x).get(newPos.y) : null;
     }
 
     protected void highlightEligibleFields(CheckerPiece piece) {
         for(Point p : this.surroundingFields(piece.getPosition())) {
-            String stringPoint = p.toString();
-            StackPane pane = this.fields.get(stringPoint);
+            StackPane pane = this.fields.get(p.x).get(p.y);
 
             if(pane.getChildren().size() > 0) {
                 Object eligibleJumpMove = this.eligibleJumpMoveOrNull(piece, p);
 
                 if(eligibleJumpMove instanceof StackPane) {
                     StackPane eligibleJumpMovePane = (StackPane) eligibleJumpMove;
-                    this.possibleJumpMoves.add(eligibleJumpMovePane);
+                    this.possibleJumpMoves.put(eligibleJumpMovePane, p);
                     View.highlightPane(eligibleJumpMovePane);
                 }
             } else {
@@ -60,7 +93,7 @@ public class Controller {
 
     protected void normalizeFields() {
         ArrayList<StackPane> allHighlightedPanes = new ArrayList<>();
-        allHighlightedPanes.addAll(this.possibleJumpMoves);
+        allHighlightedPanes.addAll(this.possibleJumpMoves.keySet());
         allHighlightedPanes.addAll(this.possibleRegularMoves);
 
         for(StackPane p : allHighlightedPanes) {
@@ -69,20 +102,30 @@ public class Controller {
     }
 
     protected void onFieldClick(Object clickedElement) {
-        System.out.println(clickedElement);
-
-        if(!(clickedElement instanceof StackPane)) {
+        if(!(clickedElement instanceof StackPane) || this.getSelectedPiece() == null) {
             return;
         }
 
-        System.out.println("Clicked field");
+        StackPane clickedElementPane = (StackPane) clickedElement;
+
+
+        if(this.possibleJumpMoves.containsKey(clickedElement)) {
+            this.doJumpMove(clickedElementPane, this.possibleJumpMoves.get(clickedElement));
+            return;
+        }
+
+        if(this.possibleRegularMoves.contains(clickedElement)) {
+            this.doRegularMove(clickedElementPane);
+        }
     }
 
     protected void setupPiece(int i, int j, Team team) {
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
 
-        piece.attachToField(this.fields, new Point(i + 1, j + 1));
+        piece.attachToFieldByPosition(this.fields, new Point(i + 1, j + 1));
         piece.setupEvent(this);
+
+        this.checkerPieces.add(piece);
     }
 
     protected void setupPieces() {
@@ -119,7 +162,11 @@ public class Controller {
     public void addField(Point p, StackPane pane) {
         pane.addEventFilter(MouseEvent.MOUSE_PRESSED, this.moveClickEventHandler);
 
-        this.fields.put(p.toString(), pane);
+        if(!this.fields.containsKey(p.x)) {
+            this.fields.put(p.x, new HashMap<>());
+        }
+
+        this.fields.get(p.x).put(p.y, pane);
     }
 
     public void setSelectedPiece(CheckerPiece piece) {

@@ -1,4 +1,3 @@
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -8,6 +7,7 @@ import javafx.scene.transform.Rotate;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CheckerPiece {
 
@@ -16,6 +16,7 @@ public class CheckerPiece {
     protected double size;
     protected Controller.Team team;
     protected Cylinder cylinder;
+    protected boolean isActive = false;
 
     public CheckerPiece(double size, Controller.Team team) {
         this.size = size;
@@ -24,11 +25,50 @@ public class CheckerPiece {
         this.setupPiece();
     }
 
-    public void attachToField(HashMap<String, StackPane> fields, Point position) {
+    public void attachToField(StackPane pane, Point position) {
+        this.detach();
+
         this.position = position;
 
-        StackPane drop = fields.get(position.toString());
-        drop.getChildren().add(this.getPane());
+        pane.getChildren().add(this.getPane());
+
+        this.isActive = true;
+    }
+
+    public void attachToFieldByPane(HashMap<Integer, HashMap<Integer, StackPane>> fields, StackPane pane) {
+        this.detach();
+
+        for (Map.Entry<Integer, HashMap<Integer, StackPane>> hmap : fields.entrySet()) {
+            int x = hmap.getKey();
+
+            for(Map.Entry<Integer, StackPane> e : hmap.getValue().entrySet()) {
+                if(e.getValue() != pane) {
+                    continue;
+                }
+
+                Point p = new Point(x, e.getKey());
+                this.attachToField(pane, p);
+
+                return;
+            }
+        }
+    }
+
+    public void attachToFieldByPosition(HashMap<Integer, HashMap<Integer, StackPane>> fields, Point position) {
+        StackPane pane = fields.get(position.x).get(position.y);
+        this.attachToField(pane, position);
+    }
+
+    public void detach() {
+        Pane p = this.getPane();
+        Object parent = p.getParent();
+
+        if(parent instanceof StackPane) {
+            StackPane parentPane = (StackPane) parent;
+            parentPane.getChildren().remove(p);
+        }
+
+        this.isActive = false;
     }
 
     public void setupEvent(Controller controller) {
