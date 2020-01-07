@@ -52,7 +52,7 @@ public class View extends Application {
         drop.setPrefSize(this.getSize(), this.getSize());
 
         this.grid.add(drop, i, j);
-        drop.toFront();
+        drop.setTranslateZ(1);
 
         this.controller.addField(new Point(i + 1, j + 1), drop);
     }
@@ -92,7 +92,6 @@ public class View extends Application {
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
-
 
         //texture
         PhongMaterial material = new PhongMaterial();
@@ -157,6 +156,8 @@ public class View extends Application {
         stackpane.getChildren().add(this.surfacePane);
         textbox.getChildren().addAll(text);
         root.getChildren().addAll(stackpane,textbox);
+        root.setTranslateZ(500);
+        stackpane.setTranslateZ(-500);
 
 
         StackPane.setAlignment(textbox, Pos.TOP_CENTER);
@@ -169,8 +170,12 @@ public class View extends Application {
 
         this.controller.setupPieces();
 
-        Scene scene = new Scene(root);
-        scene.setCamera(new PerspectiveCamera());
+        Scene scene = new Scene(root, View.WIDTH, View.HEIGHT, true, null);
+        PerspectiveCamera pc = new PerspectiveCamera();
+        pc.setNearClip(0.1);
+        pc.setFarClip(500000);
+
+        scene.setCamera(pc);
 
         primaryStage.setScene(scene);
         primaryStage.show();
