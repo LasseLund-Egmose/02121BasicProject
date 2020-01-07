@@ -9,9 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import sun.plugin2.util.ColorUtil;
 
 import java.awt.*;
 
@@ -83,11 +86,13 @@ public class View extends Application {
     protected void setupSurface() {
         this.surfacePane = new StackPane();
 
+
         // Setup board surface
         Box box = new Box();
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
+
 
         //texture
         PhongMaterial material = new PhongMaterial();
@@ -121,18 +126,42 @@ public class View extends Application {
             }
         }
 
-        primaryStage.setTitle("Checkers");
         StackPane root = new StackPane();
         root.setMinSize(View.WIDTH, View.HEIGHT);
         root.setMaxSize(View.WIDTH, View.HEIGHT);
+        root.setStyle("-fx-background-color: antiquewhite; -fx-background-size: cover;");
 
-        root.setRotationAxis(Rotate.X_AXIS);
-        root.setRotate(-50);
+        Text text = new Text("Dummy text");
+        text.setStyle("-fx-font: 50 Arial;");
+        text.setFill(Color.BLACK);
+
+        StackPane textbox = new StackPane();
+        textbox.setStyle("-fx-background-color: burlywood;");
+        textbox.setMinHeight(80);
+        textbox.setMinWidth(20);
+        textbox.setMaxHeight(20);
+        textbox.setMaxWidth(300);
+        textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
+
+
+        primaryStage.setTitle("Checkers");
+        StackPane stackpane = new StackPane();
+        stackpane.setPrefSize(View.WIDTH, View.HEIGHT);
+
+        stackpane.setRotationAxis(Rotate.X_AXIS);
+        stackpane.setRotate(-50);
+
 
         this.setupSurface();
 
-        root.getChildren().add(this.surfacePane);
+        stackpane.getChildren().add(this.surfacePane);
+        textbox.getChildren().addAll(text);
+        root.getChildren().addAll(stackpane,textbox);
+
+
+        StackPane.setAlignment(textbox, Pos.TOP_CENTER);
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
+        textbox.setAlignment(text, Pos.CENTER);
 
         this.controller = new Controller(this, this.n, this.grid);
 

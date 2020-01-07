@@ -86,6 +86,7 @@ public class Controller {
         }
     }
 
+
     protected boolean isPositionValid(Point p) {
         return p.x >= 1 && p.y >= 1 && p.x <= this.n && p.y <= this.n;
     }
