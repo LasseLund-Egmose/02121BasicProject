@@ -118,8 +118,6 @@ public class View extends Application {
         root.getChildren().add(this.surfacePane);
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
 
-        this.surfacePane.setOnMouseClicked(e -> this.rotate()); // TODO: Remove this
-
         this.controller = new Controller(this, this.n, this.grid);
 
         this.setupFields();
