@@ -35,16 +35,16 @@ public class View extends Application {
     }
 
     public static void highlightPane(StackPane pane) {
-        pane.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg); -fx-border-color: green; -fx-border-width: 5;");
+        pane.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg); -fx-border-color: green; -fx-border-width: 5;");
     }
 
     public static void normalizePane(StackPane pane) {
-        pane.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg)");
+        pane.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
     }
 
     protected void setupField(int i, int j) {
         StackPane drop = new StackPane();
-        drop.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg)");
+        drop.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
 
         drop.setPrefSize(this.getSize(), this.getSize());
 
@@ -74,7 +74,7 @@ public class View extends Application {
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
-        this.grid.setStyle("-fx-background-image: url(/assets/light_Mahogani_Texture.jpg)");
+        this.grid.setStyle("-fx-background-image: url(/assets/light_Marble_Texture.jpg); -fx-background-size: cover;");
 
         this.surfacePane.getChildren().add(this.grid);
     }
@@ -90,7 +90,7 @@ public class View extends Application {
 
         //texture
         PhongMaterial material = new PhongMaterial();
-        material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Mahogani_Texture.jpg")));
+        material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Marble_Texture.jpg")));
         box.setMaterial(material);
 
         StackPane.setAlignment(box, Pos.CENTER);
