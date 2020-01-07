@@ -126,7 +126,7 @@ public class Controller {
         this.normalizeFields();
 
         if (this.selectedPiece != null) {
-            this.selectedPiece.changePieceColor(this.selectedPiece.getColor());
+            this.selectedPiece.changePieceMaterial(this.selectedPiece.getMaterial());
         }
 
         if (this.selectedPiece != piece) {
