@@ -3,8 +3,10 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
@@ -33,16 +35,16 @@ public class View extends Application {
     }
 
     public static void highlightPane(StackPane pane) {
-        pane.setStyle("-fx-background-color: #744300; -fx-border-color: green; -fx-border-width: 5;");
+        pane.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg); -fx-border-color: green; -fx-border-width: 5;");
     }
 
     public static void normalizePane(StackPane pane) {
-        pane.setStyle("-fx-background-color: #744300");
+        pane.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg)");
     }
 
     protected void setupField(int i, int j) {
         StackPane drop = new StackPane();
-        drop.setStyle("-fx-background-color: #744300");
+        drop.setStyle("-fx-background-image: url(/assets/dark_Mahogani_Texture.jpg)");
 
         drop.setPrefSize(this.getSize(), this.getSize());
 
@@ -72,7 +74,7 @@ public class View extends Application {
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
-        this.grid.setStyle("-fx-background-color: #ffba5c");
+        this.grid.setStyle("-fx-background-image: url(/assets/light_Mahogani_Texture.jpg)");
 
         this.surfacePane.getChildren().add(this.grid);
     }
@@ -85,7 +87,11 @@ public class View extends Application {
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
-        box.setMaterial(new PhongMaterial(Color.web("#ffba5c")));
+
+        //texture
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Mahogani_Texture.jpg")));
+        box.setMaterial(material);
 
         StackPane.setAlignment(box, Pos.CENTER);
 
