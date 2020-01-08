@@ -19,43 +19,53 @@ import java.awt.*;
 
 public class View extends Application {
 
+    // Program arguments
     public static String[] args;
 
+    // Constants
     protected static final int BOARD_SIZE = 700;
+    protected static final int BOARD_TILT = 50;
     protected static final int DEPTH = 50;
     protected static final int HEIGHT = 800;
     protected static final int POPUP_SIZE = 400;
     protected static final int WIDTH = 1000;
 
+    // Assets and background styling
     protected static final String ASSET_GRID = "/assets/grid.png";
     protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_wood.jpg);";
 
-    protected Controller controller;
-    protected int dimension = 8;
-    protected Text displayTurn;
+    protected Controller controller; // Controller instance
+    protected int dimension = 8; // Board dimension
+    protected Text displayTurn; // Text element displaying turn
     protected GridPane grid;
     protected Pane surfacePane;
-    protected RotateTransition surfacePaneRotation;
+    protected RotateTransition surfacePaneRotation; // Transition rotating board after each turn
     protected Stage primaryStage;
 
+    // Set received args and launch application
     public static void main(String[] args) {
         View.args = args;
 
         launch(args);
     }
 
+    // Setup one black field
     protected void setupField(int i, int j) {
         StackPane field = new StackPane();
         field.setStyle(View.BACKGROUND_FIELD);
-
         field.setPrefSize(this.getSize(), this.getSize());
 
+        // Add it to the grid
         this.grid.add(field, i, j);
-        field.setTranslateZ(0.01); // Bring field background to front
 
+        // Bring field background to front
+        field.setTranslateZ(0.01);
+
+        // Add it to HashMap in controller
         this.controller.addField(new Point(i + 1, j + 1), field);
     }
 
+    // Setup black fields
     protected void setupFields() {
         for (int i = 0; i < this.dimension; i++) {
             for (int j = i % 2; j < this.dimension; j += 2) {
@@ -64,6 +74,7 @@ public class View extends Application {
         }
     }
 
+    // Setup GridPane on board surface
     protected void setupGrid() {
         this.grid = new GridPane();
 
@@ -73,21 +84,25 @@ public class View extends Application {
         this.grid.setMaxWidth(View.BOARD_SIZE);
         this.grid.setTranslateZ(-View.DEPTH / 2.0);
 
+        // Invert y-axis leaving position (1,1) at bottom-left
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
+        // Pass through click events and remove shadow
         this.grid.setPickOnBounds(false);
         this.grid.setStyle("-fx-effect: null;");
 
+        // Add grid to board
         this.surfacePane.getChildren().add(this.grid);
     }
 
+    // Setup board
     protected void setupSurface() {
         this.surfacePane = new StackPane();
         this.surfacePane.setPickOnBounds(false);
         this.surfacePane.setStyle("-fx-effect: null;");
 
-        // Setup board surface
+        // Setup box below board surface
         Box box = new Box();
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
@@ -95,11 +110,12 @@ public class View extends Application {
         box.setPickOnBounds(false);
         box.setStyle("-fx-effect: null;");
 
-        //texture
+        // Add wood texture to box
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseMap(new Image(getClass().getResourceAsStream(View.ASSET_GRID)));
         box.setMaterial(material);
 
+        // Alignment
         StackPane.setAlignment(box, Pos.CENTER);
 
         // Setup rotation
@@ -113,13 +129,11 @@ public class View extends Application {
 
         this.surfacePane.getChildren().add(box);
 
+        // Setup grid
         this.setupGrid();
     }
 
-    public double getSize() {
-        return ((double) View.BOARD_SIZE) / this.dimension;
-    }
-
+    // Setup win scene and display it
     public void displayWin(String whoWon) {
         this.primaryStage.setTitle("You won!");
 
@@ -150,23 +164,33 @@ public class View extends Application {
         this.primaryStage.show();
     }
 
+    // Get size (in pixels) of one field in board
+    public double getSize() {
+        return ((double) View.BOARD_SIZE) / this.dimension;
+    }
+
+    // Add highlight to black field
     public void highlightPane(StackPane pane) {
         int borderWidth = this.getSize() < 20 ? 2 : 5;
         pane.setStyle(View.BACKGROUND_FIELD + " -fx-border-color: green; -fx-border-width: " + borderWidth + ";");
     }
 
+    // Remove highlight from black field
     public void normalizePane(StackPane pane) {
         pane.setStyle(View.BACKGROUND_FIELD);
     }
 
-    public void setupDisplayTurn(boolean isWhiteTurn) {
-        this.displayTurn.setText(isWhiteTurn ? "White's turn" : "Black's turn");
-    }
-
+    // Rotate board
     public void rotate() {
         this.surfacePaneRotation.play();
     }
 
+    // Set text based on turn
+    public void setupDisplayTurn(boolean isWhiteTurn) {
+        this.displayTurn.setText(isWhiteTurn ? "White's turn" : "Black's turn");
+    }
+
+    // Handle dimension argument and setup View elements
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Checkers");
@@ -180,56 +204,69 @@ public class View extends Application {
             }
         }
 
+        // Setup root pane
         StackPane root = new StackPane();
         root.setMinSize(View.WIDTH, View.HEIGHT);
         root.setMaxSize(View.WIDTH, View.HEIGHT);
 
+        // Setup turn text and its container
         this.displayTurn = new Text();
         this.displayTurn.setStyle("-fx-font: 50 Arial;");
         this.displayTurn.setFill(Color.BLACK);
         this.setupDisplayTurn(true);
 
-        StackPane textbox = new StackPane();
-        textbox.setMinHeight(80);
-        textbox.setMinWidth(20);
-        textbox.setMaxHeight(20);
-        textbox.setMaxWidth(300);
-        textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
-        textbox.getChildren().add(this.displayTurn);
+        StackPane displayTurnContainer = new StackPane();
+        displayTurnContainer.setMinHeight(80);
+        displayTurnContainer.setMinWidth(20);
+        displayTurnContainer.setMaxHeight(20);
+        displayTurnContainer.setMaxWidth(300);
+        displayTurnContainer.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
+        displayTurnContainer.getChildren().add(this.displayTurn);
 
+        // Setup background and move it behind the board
         Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
         background.setFill(Color.web("antiquewhite"));
-        background.setTranslateZ(500); //TODO: Calculate
 
+        // Calculate how far away the background should be moved
+        double boardDiagonal = Math.sqrt(2) * (View.BOARD_SIZE / 2.0);
+        double backgroundOffset = boardDiagonal * Math.sin(Math.toRadians(View.BOARD_TILT));
+        background.setTranslateZ(backgroundOffset);
+
+        // Setup container for board and rotate it according to BOARD_TILT
         StackPane boardContainer = new StackPane();
         boardContainer.setPrefSize(View.WIDTH, View.HEIGHT);
         boardContainer.setRotationAxis(Rotate.X_AXIS);
-        boardContainer.setRotate(-50);
+        boardContainer.setRotate(-View.BOARD_TILT);
         boardContainer.setPickOnBounds(false);
         boardContainer.setStyle("-fx-effect: null;");
 
+        // Setup board surface and add it to board container
         this.setupSurface();
-
         boardContainer.getChildren().add(this.surfacePane);
 
-        root.getChildren().addAll(background, boardContainer, textbox);
-        root.setPickOnBounds(false); // Pass through click events
+        // Add aforementioned elements to root
+        root.getChildren().addAll(background, boardContainer, displayTurnContainer);
+
+        // Pass through click events and disable shadows for root
+        root.setPickOnBounds(false);
         root.setStyle("-fx-effect: null;");
 
+        // Set alignments for elements
         StackPane.setAlignment(background, Pos.CENTER);
-        StackPane.setAlignment(textbox, Pos.TOP_CENTER);
+        StackPane.setAlignment(displayTurnContainer, Pos.TOP_CENTER);
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
         StackPane.setAlignment(this.displayTurn, Pos.CENTER);
 
+        // Setup controller
         this.controller = new Controller(this, this.dimension, this.grid);
 
+        // Setup black fields (with click events) and game pieces
         this.setupFields();
-
         this.controller.setupPieces();
 
+        // Setup scene (with depthBuffer to avoid z-fighting and unexpected behaviour) and apply it
         Scene scene = new Scene(root, View.WIDTH, View.HEIGHT, true, null);
         scene.setCamera(new PerspectiveCamera());
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
