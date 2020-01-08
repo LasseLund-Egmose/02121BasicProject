@@ -1,11 +1,8 @@
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -16,7 +13,6 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -30,6 +26,7 @@ public class View extends Application {
     protected static final int HEIGHT = 800;
     protected static final int WIDTH = 1000;
     protected static final int BOARD_SIZE = 700;
+    protected static final int POPUP_SIZE = 400;
 
     protected Controller controller;
     protected GridPane grid;
@@ -64,8 +61,8 @@ public class View extends Application {
     }
 
     protected void setupFields() {
-        for(int i = 0; i < n; i++) {
-            for(int j = i % 2; j < n; j += 2) {
+        for (int i = 0; i < n; i++) {
+            for (int j = i % 2; j < n; j += 2) {
                 this.setupField(i, j);
             }
         }
@@ -86,7 +83,7 @@ public class View extends Application {
         this.grid.setStyle("-fx-background-image: url(/assets/light_Marble_Texture.jpg); -fx-background-size: cover;");
 
         this.grid.setPickOnBounds(false);
-        
+
         this.surfacePane.getChildren().add(this.grid);
 
     }
@@ -125,12 +122,13 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage=primaryStage;
+        this.primaryStage = primaryStage;
+        
         // Handle n-argument
-        if(View.args.length == 1) {
+        if (View.args.length == 1) {
             int newN = Integer.parseInt(View.args[0]);
 
-            if(newN >= 3 && newN <= 100) {
+            if (newN >= 3 && newN <= 100) {
                 this.n = newN;
             }
         }
@@ -138,7 +136,6 @@ public class View extends Application {
         StackPane root = new StackPane();
         root.setMinSize(View.WIDTH, View.HEIGHT);
         root.setMaxSize(View.WIDTH, View.HEIGHT);
-        // root.setStyle("-fx-background-color: antiquewhite;");
 
 
         this.displayTurn = new Text("whites turn");
@@ -191,44 +188,42 @@ public class View extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
     public void setupDisplayTurn(boolean isWhiteTurn) {
-        if (isWhiteTurn!=true) {
-            this.displayTurn.setText("Blacks turn");
-        } else {
-            this.displayTurn.setText("Whites turn");
-        }
+        this.displayTurn.setText(isWhiteTurn ? "Whites turn" : "Blacks turn");
     }
 
     public void displayWin(String whoWon) {
-        Stage stage = new Stage();
-        stage.setTitle("You Won!!");
-        GridPane gridpane = new GridPane();
-        gridpane.setAlignment(Pos.CENTER);
-        Label label = new Label(whoWon);
-        Popup popup = new Popup();
-        gridpane.setStyle("-fx-background-image: url(/assets/confetti_Texture.jpg); -fx-background-size: cover;");
+        this.primaryStage.setTitle("You won!");
 
-        label.setStyle(" -fx-background-color: white; -fx-font: 50 Arial");
-        label.setAlignment(Pos.BASELINE_CENTER);
-
-        popup.getContent().add(label);
-
-        label.setMinWidth(300);
-        label.setMinHeight(150);
+        StackPane root = new StackPane();
 
         Button button = new Button("Close");
-        button.setOnMouseClicked( e ->{
-            Node source = (Node)  e.getSource();
-            Stage stage1  = (Stage) source.getScene().getWindow();
-            stage.close();
+        button.setOnMouseClicked(e -> {
             this.primaryStage.close();
         });
 
-        gridpane.getChildren().add(button);
-        Scene scene = new Scene(gridpane, 1000,840);
-        stage.setScene(scene);
+        StackPane pane = new StackPane();
+        pane.setStyle("-fx-background-image: url(/assets/confetti_Texture.jpg); -fx-background-size: cover; -fx-border-color: black; -fx-border-width: 5px;");
+        pane.setMinSize(View.POPUP_SIZE, View.POPUP_SIZE);
+        pane.setMaxSize(View.POPUP_SIZE, View.POPUP_SIZE);
 
-        stage.show();
+        Label label = new Label(whoWon);
+        label.setAlignment(Pos.BASELINE_CENTER);
+        label.setMinWidth(300);
+        label.setMinHeight(150);
+        label.setStyle("-fx-font: 50 Arial");
+
+        StackPane.setAlignment(pane, Pos.CENTER);
+        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(button, Pos.BOTTOM_CENTER);
+
+        pane.getChildren().addAll(label, button);
+        root.getChildren().add(pane);
+
+        Scene scene = new Scene(root, View.WIDTH, View.HEIGHT);
+        this.primaryStage.setScene(scene);
+        this.primaryStage.show();
     }
 
     public void rotate() {

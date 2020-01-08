@@ -25,6 +25,7 @@ public class Controller {
     protected HashMap<StackPane, Point> possibleJumpMoves = new HashMap<>(); // A map (pane -> jumped position) of all possible jump moves
     protected ArrayList<StackPane> possibleRegularMoves = new ArrayList<>(); // A list of all possible regular moves
 
+    protected HashMap<Team, Integer> activeCount = new HashMap<>();
     protected GridPane grid;
     protected EventHandler<MouseEvent> moveClickEventHandler;
     protected int n;
@@ -38,12 +39,12 @@ public class Controller {
     }
 
     protected void doJumpMove(StackPane toPane, Point jumpedPosition) {
-        for(CheckerPiece piece : this.checkerPieces) {
-            if(!piece.getPosition().equals(jumpedPosition)) {
+        for (CheckerPiece piece : this.checkerPieces) {
+            if (!piece.getPosition().equals(jumpedPosition)) {
                 continue;
             }
-            piece.detach();
-            this.checkerPieces.remove(piece);
+
+            piece.detach(this.activeCount);
 
             break;
         }
@@ -52,7 +53,7 @@ public class Controller {
     }
 
     protected void doRegularMove(StackPane toPane) {
-        this.getSelectedPiece().attachToFieldByPane(this.fields, toPane);
+        this.getSelectedPiece().attachToFieldByPane(this.fields, toPane, this.activeCount);
 
         this.selectedPiece.assertHighlight(false);
 
@@ -67,28 +68,21 @@ public class Controller {
 
     protected void finishTurn() {
         this.isWhiteTurn = !this.isWhiteTurn;
+
         checkForWin();
+
         this.view.setupDisplayTurn(this.isWhiteTurn);
         this.view.rotate();
     }
 
-    protected void checkForWin(){
-        int white = 0;
-        int black = 0;
-
-        for(int i = 0; i<this.checkerPieces.size(); i++) {
-            if (this.checkerPieces.get(i).team == Team.WHITE) {
-                white++;
-            } else {
-                black++;
-            }
+    protected void checkForWin() {
+        if (this.activeCount.get(Team.BLACK) == 0) {
+            this.view.displayWin("White won");
         }
-        System.out.println("white:=" + white + "  " + "black:=" + black );
-         if (white==0) {
-             this.view.displayWin("black won!!");
-         } else if (black==0) {
-             this.view.displayWin("white won!!");
-         }
+
+        if (this.activeCount.get(Team.WHITE) == 0) {
+            this.view.displayWin("Black won");
+        }
     }
 
     protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
@@ -102,13 +96,13 @@ public class Controller {
     }
 
     protected void highlightEligibleFields(CheckerPiece piece) {
-        for(Point p : this.surroundingFields(piece.getPosition())) {
+        for (Point p : this.surroundingFields(piece.getPosition())) {
             StackPane pane = this.fields.get(p.x).get(p.y);
 
-            if(pane.getChildren().size() > 0) {
+            if (pane.getChildren().size() > 0) {
                 Object eligibleJumpMove = this.eligibleJumpMoveOrNull(piece, p);
 
-                if(eligibleJumpMove instanceof StackPane) {
+                if (eligibleJumpMove instanceof StackPane) {
                     StackPane eligibleJumpMovePane = (StackPane) eligibleJumpMove;
                     this.possibleJumpMoves.put(eligibleJumpMovePane, p);
                     View.highlightPane(eligibleJumpMovePane);
@@ -130,25 +124,25 @@ public class Controller {
         allHighlightedPanes.addAll(this.possibleJumpMoves.keySet());
         allHighlightedPanes.addAll(this.possibleRegularMoves);
 
-        for(StackPane p : allHighlightedPanes) {
+        for (StackPane p : allHighlightedPanes) {
             View.normalizePane(p);
         }
     }
 
     protected void onFieldClick(Object clickedElement) {
-        if(!(clickedElement instanceof StackPane) || this.getSelectedPiece() == null) {
+        if (!(clickedElement instanceof StackPane) || this.getSelectedPiece() == null) {
             return;
         }
 
         StackPane clickedElementPane = (StackPane) clickedElement;
 
 
-        if(this.possibleJumpMoves.containsKey(clickedElement)) {
+        if (this.possibleJumpMoves.containsKey(clickedElement)) {
             this.doJumpMove(clickedElementPane, this.possibleJumpMoves.get(clickedElement));
             return;
         }
 
-        if(this.possibleRegularMoves.contains(clickedElement)) {
+        if (this.possibleRegularMoves.contains(clickedElement)) {
             this.doRegularMove(clickedElementPane);
         }
     }
@@ -156,7 +150,11 @@ public class Controller {
     protected void setupPiece(int i, int j, Team team) {
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
 
-        piece.attachToFieldByPosition(this.fields, new Point(i + 1, j + 1));
+        piece.attachToFieldByPosition(
+            this.fields,
+            new Point(i + 1, j + 1),
+            this.activeCount
+        );
         piece.setupEvent(this);
 
         this.checkerPieces.add(piece);
@@ -169,16 +167,16 @@ public class Controller {
 
     protected ArrayList<Point> surroundingFields(Point p) {
         ArrayList<Point> eligiblePoints = new ArrayList<>();
-        Point[] points = new Point[] {
+        Point[] points = new Point[]{
             new Point(p.x - 1, p.y + 1),
             new Point(p.x + 1, p.y + 1),
             new Point(p.x - 1, p.y - 1),
             new Point(p.x + 1, p.y - 1)
         };
 
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             Point ip = points[i];
-            if(this.isPositionValid(ip)) {
+            if (this.isPositionValid(ip)) {
                 eligiblePoints.add(ip);
             }
         }
@@ -191,12 +189,15 @@ public class Controller {
         this.moveClickEventHandler = mouseEvent -> this.onFieldClick(mouseEvent.getSource());
         this.n = n;
         this.view = view;
+
+        this.activeCount.put(Team.BLACK, 0);
+        this.activeCount.put(Team.WHITE, 0);
     }
 
     public void addField(Point p, StackPane pane) {
         pane.addEventFilter(MouseEvent.MOUSE_PRESSED, this.moveClickEventHandler);
 
-        if(!this.fields.containsKey(p.x)) {
+        if (!this.fields.containsKey(p.x)) {
             this.fields.put(p.x, new HashMap<>());
         }
 
@@ -208,7 +209,7 @@ public class Controller {
             this.selectedPiece.assertHighlight(false);
         }
 
-        if (this.selectedPiece != piece && ((isWhiteTurn==true && piece.team==Team.WHITE) || (isWhiteTurn==false && piece.team==Team.BLACK))) {
+        if (this.selectedPiece != piece && isWhiteTurn == (piece.team == Team.WHITE)) {
             this.selectedPiece = piece;
             this.selectedPiece.assertHighlight(true);
 

@@ -27,7 +27,7 @@ public class CheckerPiece {
     }
 
     public void assertHighlight(boolean shouldHighlight) {
-        if(shouldHighlight) {
+        if (shouldHighlight) {
             this.cylinder.setMaterial(new PhongMaterial(Color.LIMEGREEN));
             return;
         }
@@ -35,54 +35,72 @@ public class CheckerPiece {
         this.cylinder.setMaterial(this.getMaterial());
     }
 
-    public void attachToField(StackPane pane, Point position) {
-        this.detach();
+    public void attachToField(StackPane pane, Point position, HashMap<Controller.Team, Integer> activeCount) {
+        this.detach(activeCount);
 
         this.position = position;
 
         pane.getChildren().add(this.getPane());
 
+        if (!this.isActive) {
+            int activeCountInt = activeCount.get(this.team);
+            activeCountInt++;
+            activeCount.put(this.team, activeCountInt);
+        }
+
         this.isActive = true;
     }
 
-    public void attachToFieldByPane(HashMap<Integer, HashMap<Integer, StackPane>> fields, StackPane pane) {
-        this.detach();
-
+    public void attachToFieldByPane(
+        HashMap<Integer, HashMap<Integer, StackPane>> fields,
+        StackPane pane,
+        HashMap<Controller.Team, Integer> activeCount
+    ) {
         for (Map.Entry<Integer, HashMap<Integer, StackPane>> hmap : fields.entrySet()) {
             int x = hmap.getKey();
 
-            for(Map.Entry<Integer, StackPane> e : hmap.getValue().entrySet()) {
-                if(e.getValue() != pane) {
+            for (Map.Entry<Integer, StackPane> e : hmap.getValue().entrySet()) {
+                if (e.getValue() != pane) {
                     continue;
                 }
 
                 Point p = new Point(x, e.getKey());
-                this.attachToField(pane, p);
+                this.attachToField(pane, p, activeCount);
 
                 return;
             }
         }
     }
 
-    public void attachToFieldByPosition(HashMap<Integer, HashMap<Integer, StackPane>> fields, Point position) {
+    public void attachToFieldByPosition(
+        HashMap<Integer, HashMap<Integer, StackPane>> fields,
+        Point position,
+        HashMap<Controller.Team, Integer> activeCount
+    ) {
         StackPane pane = fields.get(position.x).get(position.y);
-        this.attachToField(pane, position);
+        this.attachToField(pane, position, activeCount);
     }
 
-    public void detach() {
+    public void detach(HashMap<Controller.Team, Integer> activeCount) {
         Pane p = this.getPane();
         Object parent = p.getParent();
 
-        if(parent instanceof StackPane) {
+        if (parent instanceof StackPane) {
             StackPane parentPane = (StackPane) parent;
             parentPane.getChildren().remove(p);
+        }
+
+        if (this.isActive) {
+            int activeCountInt = activeCount.get(this.team);
+            activeCountInt--;
+            activeCount.put(this.team, activeCountInt);
         }
 
         this.isActive = false;
     }
 
     public void setupEvent(Controller controller) {
-        this.pane.setOnMouseClicked( e -> {
+        this.pane.setOnMouseClicked(e -> {
             controller.setSelectedPiece(this);
         });
     }
@@ -98,14 +116,6 @@ public class CheckerPiece {
         this.pane.getChildren().add(this.cylinder);
     }
 
-    protected Point getPosition() {
-        return this.position;
-    }
-
-    protected Pane getPane() {
-        return this.pane;
-    }
-
     public PhongMaterial getMaterial() {
         PhongMaterial materialDark = new PhongMaterial();
         materialDark.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/5dark_Marble_Texture.jpg")));
@@ -113,6 +123,18 @@ public class CheckerPiece {
         materialLight.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/2light_Marble_Texture.jpg")));
 
         return team == Controller.Team.BLACK ? materialDark : materialLight;
+    }
+
+    public Pane getPane() {
+        return this.pane;
+    }
+
+    public Point getPosition() {
+        return this.position;
+    }
+
+    public Controller.Team getTeam() {
+        return this.team;
     }
 
 
