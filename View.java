@@ -206,39 +206,30 @@ public class View extends Application {
         StackPane root = new StackPane();
 
         Button button = new Button("Close");
-        button.setStyle("-fx-padding: 8 15 15 15;\n" +
-                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
-                "    -fx-background-radius: 8;\n" +
-                "    -fx-background-color: \n" +
-                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
-                "        #9d4024,\n" +
-                "        #d86e3a,\n" +
-                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
-                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-font-size: 60px;");
+        button.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #DAA520;");
         button.setOnMouseClicked(e -> this.primaryStage.close());
 
         StackPane pane = new StackPane();
-        pane.setStyle(View.BACKGROUND_WIN + " -fx-background-size: cover; -fx-border-color: black; -fx-border-width: 5px;");
+        pane.setStyle(View.BACKGROUND_WIN + " -fx-background-size: cover; -fx-border-color: #DAA520; -fx-border-width: 5px;");
         pane.setMinSize(View.POPUP_SIZE, View.POPUP_SIZE);
         pane.setMaxSize(View.POPUP_SIZE, View.POPUP_SIZE);
 
-        DropShadow ds = new DropShadow();
-        ds.setOffsetY(3.0f);
-        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+        StackPane textContainer = new StackPane();
+        textContainer.setMinSize(View.POPUP_SIZE - 10, 100);
+        textContainer.setMaxSize(View.POPUP_SIZE - 10, 100);
+        textContainer.setStyle(View.BACKGROUND_GRID);
 
         Text text = new Text();
-        text.setEffect(ds);
-        text.setFill(Color.GOLDENROD);
         text.setText(whoWon);
         text.setStyle("-fx-font: 70px Arial");
 
-        StackPane.setAlignment(pane, Pos.CENTER);
         StackPane.setAlignment(text, Pos.CENTER);
+        StackPane.setAlignment(textContainer, Pos.CENTER);
+        StackPane.setAlignment(pane, Pos.CENTER);
         StackPane.setAlignment(button, Pos.BOTTOM_CENTER);
 
-        pane.getChildren().addAll(text, button);
+        textContainer.getChildren().add(text);
+        pane.getChildren().addAll(textContainer, button);
         root.getChildren().add(pane);
 
         Scene scene = new Scene(root, View.WIDTH, View.HEIGHT);
