@@ -130,8 +130,6 @@ public class CheckerPiece {
     }
 
     public void setupEvent(Controller controller) {
-        this.pane.setOnMouseClicked(e -> {
-            controller.setSelectedPiece(this);
-        });
+        this.pane.setOnMouseClicked(e -> controller.setSelectedPiece(this));
     }
 }

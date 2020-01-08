@@ -11,13 +11,15 @@ public class Controller {
 
     protected ArrayList<CheckerPiece> checkerPieces = new ArrayList<>(); // A list of all pieces
     protected HashMap<Integer, HashMap<Integer, StackPane>> fields = new HashMap<>(); // A map (x -> y -> pane) of all dark fields (StackPanes)
+
+    protected HashMap<Team, Integer> activeCount = new HashMap<>(); // A map (Team -> int) of number of active pieces on each team
+
     protected HashMap<StackPane, Point> possibleJumpMoves = new HashMap<>(); // A map (pane -> jumped position) of all possible jump moves
     protected ArrayList<StackPane> possibleRegularMoves = new ArrayList<>(); // A list of all possible regular moves
 
-    protected HashMap<Team, Integer> activeCount = new HashMap<>();
+    protected int dimension;
     protected GridPane grid;
     protected EventHandler<MouseEvent> moveClickEventHandler;
-    protected int n;
     protected CheckerPiece selectedPiece = null;
     protected View view;
     protected boolean isWhiteTurn = true;
@@ -105,7 +107,7 @@ public class Controller {
 
 
     protected boolean isPositionValid(Point p) {
-        return p.x >= 1 && p.y >= 1 && p.x <= this.n && p.y <= this.n;
+        return p.x >= 1 && p.y >= 1 && p.x <= this.dimension && p.y <= this.dimension;
     }
 
     protected void normalizeFields() {
@@ -152,7 +154,7 @@ public class Controller {
 
     protected void setupPieces() {
         this.setupPiece(new Point(1, 1), Team.WHITE);
-        this.setupPiece(new Point(this.n, this.n), Team.BLACK);
+        this.setupPiece(new Point(this.dimension, this.dimension), Team.BLACK);
     }
 
     protected ArrayList<Point> surroundingFields(Point p) {
@@ -174,10 +176,10 @@ public class Controller {
         return eligiblePoints;
     }
 
-    public Controller(View view, int n, GridPane grid) {
+    public Controller(View view, int dimension, GridPane grid) {
+        this.dimension = dimension;
         this.grid = grid;
         this.moveClickEventHandler = mouseEvent -> this.onFieldClick(mouseEvent.getSource());
-        this.n = n;
         this.view = view;
 
         this.activeCount.put(Team.BLACK, 0);

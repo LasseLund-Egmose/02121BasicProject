@@ -33,15 +33,15 @@ public class View extends Application {
     protected static final String BACKGROUND_WIN = "-fx-background-image: url(/assets/confetti_Texture.jpg);";
 
     protected Controller controller;
+    protected int dimension = 8;
     protected GridPane grid;
-    protected int n = 8;
     protected Pane surfacePane;
     protected RotateTransition surfacePaneRotation;
     protected Text displayTurn;
     protected Stage primaryStage;
 
     public double getSize() {
-        return ((double) View.BOARD_SIZE) / this.n;
+        return ((double) View.BOARD_SIZE) / this.dimension;
     }
 
     public void highlightPane(StackPane pane) {
@@ -66,8 +66,8 @@ public class View extends Application {
     }
 
     protected void setupFields() {
-        for (int i = 0; i < n; i++) {
-            for (int j = i % 2; j < n; j += 2) {
+        for (int i = 0; i < this.dimension; i++) {
+            for (int j = i % 2; j < this.dimension; j += 2) {
                 this.setupField(i, j);
             }
         }
@@ -132,7 +132,7 @@ public class View extends Application {
             int newN = Integer.parseInt(View.args[0]);
 
             if (newN >= 3 && newN <= 100) {
-                this.n = newN;
+                this.dimension = newN;
             }
         }
 
@@ -181,7 +181,7 @@ public class View extends Application {
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
         StackPane.setAlignment(this.displayTurn, Pos.CENTER);
 
-        this.controller = new Controller(this, this.n, this.grid);
+        this.controller = new Controller(this, this.dimension, this.grid);
 
         this.setupFields();
 
@@ -204,9 +204,7 @@ public class View extends Application {
         StackPane root = new StackPane();
 
         Button button = new Button("Close");
-        button.setOnMouseClicked(e -> {
-            this.primaryStage.close();
-        });
+        button.setOnMouseClicked(e -> this.primaryStage.close());
 
         StackPane pane = new StackPane();
         pane.setStyle(View.BACKGROUND_WIN + " -fx-background-size: cover; -fx-border-color: black; -fx-border-width: 5px;");
