@@ -227,7 +227,7 @@ public class View extends Application {
         Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
         background.setFill(Color.web("antiquewhite"));
 
-        // Calculate how far away the background should be moved
+        // Calculate how far away the background should be moved (using the Pythagorean theorem and the law of sines)
         double boardDiagonal = Math.sqrt(2) * (View.BOARD_SIZE / 2.0);
         double backgroundOffset = boardDiagonal * Math.sin(Math.toRadians(View.BOARD_TILT));
         background.setTranslateZ(backgroundOffset);
