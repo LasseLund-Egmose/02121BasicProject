@@ -152,7 +152,7 @@ public class View extends Application {
         textbox.setMaxHeight(20);
         textbox.setMaxWidth(300);
         textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
-        textbox.getChildren().add(text);
+        textbox.getChildren().add(this.displayTurn);
 
         primaryStage.setTitle("Checkers");
 
@@ -177,7 +177,7 @@ public class View extends Application {
         StackPane.setAlignment(background, Pos.CENTER);
         StackPane.setAlignment(textbox, Pos.TOP_CENTER);
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
-        StackPane.setAlignment(text, Pos.CENTER);
+        StackPane.setAlignment(this.displayTurn, Pos.CENTER);
 
         this.controller = new Controller(this, this.n, this.grid);
 
