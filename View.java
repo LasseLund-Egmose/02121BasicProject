@@ -193,7 +193,7 @@ public class View extends Application {
     // Handle dimension argument and setup View elements
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Checkers");
+        this.primaryStage.setTitle("SimpDam");
 
         // Handle n-argument
         if (View.args.length == 1) {
