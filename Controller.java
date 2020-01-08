@@ -1,18 +1,7 @@
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
-import javafx.stage.Popup;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -105,11 +94,11 @@ public class Controller {
                 if (eligibleJumpMove instanceof StackPane) {
                     StackPane eligibleJumpMovePane = (StackPane) eligibleJumpMove;
                     this.possibleJumpMoves.put(eligibleJumpMovePane, p);
-                    View.highlightPane(eligibleJumpMovePane);
+                    this.view.highlightPane(eligibleJumpMovePane);
                 }
             } else {
                 this.possibleRegularMoves.add(pane);
-                View.highlightPane(pane);
+                this.view.highlightPane(pane);
             }
         }
     }
@@ -125,7 +114,7 @@ public class Controller {
         allHighlightedPanes.addAll(this.possibleRegularMoves);
 
         for (StackPane p : allHighlightedPanes) {
-            View.normalizePane(p);
+            this.view.normalizePane(p);
         }
     }
 
@@ -147,22 +136,23 @@ public class Controller {
         }
     }
 
-    protected void setupPiece(int i, int j, Team team) {
+    protected void setupPiece(Point position, Team team) {
         CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
 
         piece.attachToFieldByPosition(
             this.fields,
-            new Point(i + 1, j + 1),
+            position,
             this.activeCount
         );
+
         piece.setupEvent(this);
 
         this.checkerPieces.add(piece);
     }
 
     protected void setupPieces() {
-        this.setupPiece(3, 3, Team.WHITE);
-        this.setupPiece(this.n - 4, this.n - 4, Team.BLACK);
+        this.setupPiece(new Point(1, 1), Team.WHITE);
+        this.setupPiece(new Point(this.n, this.n), Team.BLACK);
     }
 
     protected ArrayList<Point> surroundingFields(Point p) {
@@ -224,9 +214,4 @@ public class Controller {
     public CheckerPiece getSelectedPiece() {
         return this.selectedPiece;
     }
-
-    public boolean getisWhiteturn() {
-        return this.isWhiteTurn;
-    }
-
 }

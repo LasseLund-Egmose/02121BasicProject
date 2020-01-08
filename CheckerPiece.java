@@ -19,6 +19,19 @@ public class CheckerPiece {
     protected Cylinder cylinder;
     protected boolean isActive = false;
 
+    protected void setupPiece() {
+        double radius = (this.size * 2) / 5;
+
+        this.cylinder = new Cylinder(radius, radius / 1.5);
+        this.cylinder.setMaterial(this.getMaterial());
+        this.cylinder.setRotationAxis(Rotate.X_AXIS);
+        this.cylinder.setRotate(90);
+        this.cylinder.setTranslateZ(4);
+
+        this.pane = new StackPane();
+        this.pane.getChildren().add(this.cylinder);
+    }
+
     public CheckerPiece(double size, Controller.Team team) {
         this.size = size;
         this.team = team;
@@ -99,23 +112,6 @@ public class CheckerPiece {
         this.isActive = false;
     }
 
-    public void setupEvent(Controller controller) {
-        this.pane.setOnMouseClicked(e -> {
-            controller.setSelectedPiece(this);
-        });
-    }
-
-    protected void setupPiece() {
-        this.cylinder = new Cylinder((this.size * 2) / 5, 8);
-        this.cylinder.setMaterial(this.getMaterial());
-        this.cylinder.setRotationAxis(Rotate.X_AXIS);
-        this.cylinder.setRotate(90);
-        this.cylinder.setTranslateZ(4);
-
-        this.pane = new StackPane();
-        this.pane.getChildren().add(this.cylinder);
-    }
-
     public PhongMaterial getMaterial() {
         PhongMaterial materialDark = new PhongMaterial();
         materialDark.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/5dark_Marble_Texture.jpg")));
@@ -133,9 +129,9 @@ public class CheckerPiece {
         return this.position;
     }
 
-    public Controller.Team getTeam() {
-        return this.team;
+    public void setupEvent(Controller controller) {
+        this.pane.setOnMouseClicked(e -> {
+            controller.setSelectedPiece(this);
+        });
     }
-
-
 }

@@ -22,11 +22,15 @@ public class View extends Application {
 
     public static String[] args;
 
+    protected static final int BOARD_SIZE = 700;
     protected static final int DEPTH = 50;
     protected static final int HEIGHT = 800;
-    protected static final int WIDTH = 1000;
-    protected static final int BOARD_SIZE = 700;
     protected static final int POPUP_SIZE = 400;
+    protected static final int WIDTH = 1000;
+
+    protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_Wood_Texture.jpg);";
+    protected static final String BACKGROUND_GRID = "-fx-background-image: url(/assets/light_Marble_Texture.jpg);";
+    protected static final String BACKGROUND_WIN = "-fx-background-image: url(/assets/confetti_Texture.jpg);";
 
     protected Controller controller;
     protected GridPane grid;
@@ -40,17 +44,18 @@ public class View extends Application {
         return ((double) View.BOARD_SIZE) / this.n;
     }
 
-    public static void highlightPane(StackPane pane) {
-        pane.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg); -fx-border-color: green; -fx-border-width: 5;");
+    public void highlightPane(StackPane pane) {
+        int borderWidth = this.getSize() < 20 ? 2 : 5;
+        pane.setStyle(View.BACKGROUND_FIELD + " -fx-border-color: green; -fx-border-width: " + borderWidth + ";");
     }
 
-    public static void normalizePane(StackPane pane) {
-        pane.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
+    public void normalizePane(StackPane pane) {
+        pane.setStyle(View.BACKGROUND_FIELD);
     }
 
     protected void setupField(int i, int j) {
         StackPane field = new StackPane();
-        field.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
+        field.setStyle(View.BACKGROUND_FIELD);
 
         field.setPrefSize(this.getSize(), this.getSize());
 
@@ -80,12 +85,11 @@ public class View extends Application {
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
-        this.grid.setStyle("-fx-background-image: url(/assets/light_Marble_Texture.jpg); -fx-background-size: cover;");
+        this.grid.setStyle(View.BACKGROUND_GRID + " -fx-background-size: cover;");
 
         this.grid.setPickOnBounds(false);
 
         this.surfacePane.getChildren().add(this.grid);
-
     }
 
     protected void setupSurface() {
@@ -120,10 +124,9 @@ public class View extends Application {
         this.setupGrid();
     }
 
-    @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        
+
         // Handle n-argument
         if (View.args.length == 1) {
             int newN = Integer.parseInt(View.args[0]);
@@ -138,9 +141,11 @@ public class View extends Application {
         root.setMaxSize(View.WIDTH, View.HEIGHT);
 
 
-        this.displayTurn = new Text("whites turn");
+        this.displayTurn = new Text();
         this.displayTurn.setStyle("-fx-font: 50 Arial;");
         this.displayTurn.setFill(Color.BLACK);
+
+        this.setupDisplayTurn(true);
 
         StackPane textbox = new StackPane();
         textbox.setStyle("-fx-background-color: burlywood;");
@@ -190,7 +195,7 @@ public class View extends Application {
     }
 
     public void setupDisplayTurn(boolean isWhiteTurn) {
-        this.displayTurn.setText(isWhiteTurn ? "Whites turn" : "Blacks turn");
+        this.displayTurn.setText(isWhiteTurn ? "White's turn" : "Black's turn");
     }
 
     public void displayWin(String whoWon) {
@@ -204,7 +209,7 @@ public class View extends Application {
         });
 
         StackPane pane = new StackPane();
-        pane.setStyle("-fx-background-image: url(/assets/confetti_Texture.jpg); -fx-background-size: cover; -fx-border-color: black; -fx-border-width: 5px;");
+        pane.setStyle(View.BACKGROUND_WIN + " -fx-background-size: cover; -fx-border-color: black; -fx-border-width: 5px;");
         pane.setMinSize(View.POPUP_SIZE, View.POPUP_SIZE);
         pane.setMaxSize(View.POPUP_SIZE, View.POPUP_SIZE);
 
