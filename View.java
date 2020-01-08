@@ -27,9 +27,10 @@ public class View extends Application {
     protected static final int POPUP_SIZE = 400;
     protected static final int WIDTH = 1000;
 
-    protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_Wood_Texture.jpg);";
-    protected static final String BACKGROUND_GRID = "-fx-background-image: url(/assets/light_Marble_Texture.jpg);";
-    protected static final String BACKGROUND_WIN = "-fx-background-image: url(/assets/confetti_Texture.jpg);";
+    protected static final String ASSET_GRID = "/assets/grid.png";
+
+    protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_wood.png);";
+    protected static final String BACKGROUND_GRID = "-fx-background-image: url(" + ASSET_GRID + ");";
 
     protected Controller controller;
     protected int dimension = 8;
@@ -105,7 +106,7 @@ public class View extends Application {
 
         //texture
         PhongMaterial material = new PhongMaterial();
-        material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Marble_Texture.jpg")));
+        material.setDiffuseMap(new Image(getClass().getResourceAsStream(View.ASSET_GRID)));
         box.setMaterial(material);
 
         StackPane.setAlignment(box, Pos.CENTER);
@@ -209,26 +210,19 @@ public class View extends Application {
         button.setOnMouseClicked(e -> this.primaryStage.close());
 
         StackPane pane = new StackPane();
-        pane.setStyle(View.BACKGROUND_WIN + " -fx-background-size: cover; -fx-border-color: #DAA520; -fx-border-width: 5px;");
+        pane.setStyle("-fx-background-color: antiquewhite; -fx-border-color: #DAA520; -fx-border-width: 5px;");
         pane.setMinSize(View.POPUP_SIZE, View.POPUP_SIZE);
         pane.setMaxSize(View.POPUP_SIZE, View.POPUP_SIZE);
-
-        StackPane textContainer = new StackPane();
-        textContainer.setMinSize(View.POPUP_SIZE - 10, 100);
-        textContainer.setMaxSize(View.POPUP_SIZE - 10, 100);
-        textContainer.setStyle(View.BACKGROUND_GRID);
 
         Text text = new Text();
         text.setText(whoWon);
         text.setStyle("-fx-font: 70px Arial");
 
         StackPane.setAlignment(text, Pos.CENTER);
-        StackPane.setAlignment(textContainer, Pos.CENTER);
         StackPane.setAlignment(pane, Pos.CENTER);
         StackPane.setAlignment(button, Pos.BOTTOM_CENTER);
 
-        textContainer.getChildren().add(text);
-        pane.getChildren().addAll(textContainer, button);
+        pane.getChildren().addAll(text, button);
         root.getChildren().add(pane);
 
         Scene scene = new Scene(root, View.WIDTH, View.HEIGHT);

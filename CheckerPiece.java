@@ -114,9 +114,10 @@ public class CheckerPiece {
 
     public PhongMaterial getMaterial() {
         PhongMaterial materialDark = new PhongMaterial();
-        materialDark.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/5dark_Marble_Texture.jpg")));
+        materialDark.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/piece_black.jpg")));
+
         PhongMaterial materialLight = new PhongMaterial();
-        materialLight.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/2light_Marble_Texture.jpg")));
+        materialLight.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/piece_white.jpg")));
 
         return team == Controller.Team.BLACK ? materialDark : materialLight;
     }
