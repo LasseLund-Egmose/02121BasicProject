@@ -1,9 +1,13 @@
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
@@ -12,6 +16,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,6 +36,8 @@ public class View extends Application {
     protected int n = 8;
     protected Pane surfacePane;
     protected RotateTransition surfacePaneRotation;
+    protected Text displayTurn;
+    protected Stage primaryStage;
 
     public double getSize() {
         return ((double) View.BOARD_SIZE) / this.n;
@@ -118,6 +125,7 @@ public class View extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        this.primaryStage=primaryStage;
         // Handle n-argument
         if(View.args.length == 1) {
             int newN = Integer.parseInt(View.args[0]);
@@ -132,9 +140,10 @@ public class View extends Application {
         root.setMaxSize(View.WIDTH, View.HEIGHT);
         // root.setStyle("-fx-background-color: antiquewhite;");
 
-        Text text = new Text("Dummy text");
-        text.setStyle("-fx-font: 50 Arial;");
-        text.setFill(Color.BLACK);
+
+        this.displayTurn = new Text("whites turn");
+        this.displayTurn.setStyle("-fx-font: 50 Arial;");
+        this.displayTurn.setFill(Color.BLACK);
 
         StackPane textbox = new StackPane();
         textbox.setStyle("-fx-background-color: burlywood;");
@@ -144,7 +153,6 @@ public class View extends Application {
         textbox.setMaxWidth(300);
         textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
         textbox.getChildren().add(text);
-
 
         primaryStage.setTitle("Checkers");
 
@@ -183,6 +191,45 @@ public class View extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    public void setupDisplayTurn(boolean isWhiteTurn) {
+        if (isWhiteTurn!=true) {
+            this.displayTurn.setText("Blacks turn");
+        } else {
+            this.displayTurn.setText("Whites turn");
+        }
+    }
+
+    public void displayWin(String whoWon) {
+        Stage stage = new Stage();
+        stage.setTitle("You Won!!");
+        GridPane gridpane = new GridPane();
+        gridpane.setAlignment(Pos.CENTER);
+        Label label = new Label(whoWon);
+        Popup popup = new Popup();
+        gridpane.setStyle("-fx-background-image: url(/assets/confetti_Texture.jpg); -fx-background-size: cover;");
+
+        label.setStyle(" -fx-background-color: white; -fx-font: 50 Arial");
+        label.setAlignment(Pos.BASELINE_CENTER);
+
+        popup.getContent().add(label);
+
+        label.setMinWidth(300);
+        label.setMinHeight(150);
+
+        Button button = new Button("Close");
+        button.setOnMouseClicked( e ->{
+            Node source = (Node)  e.getSource();
+            Stage stage1  = (Stage) source.getScene().getWindow();
+            stage.close();
+            this.primaryStage.close();
+        });
+
+        gridpane.getChildren().add(button);
+        Scene scene = new Scene(gridpane, 1000,840);
+        stage.setScene(scene);
+
+        stage.show();
+    }
 
     public void rotate() {
         this.surfacePaneRotation.play();
@@ -193,4 +240,5 @@ public class View extends Application {
 
         launch(args);
     }
+
 }

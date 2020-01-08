@@ -68,6 +68,7 @@ public class Controller {
     protected void finishTurn() {
         this.isWhiteTurn = !this.isWhiteTurn;
         checkForWin();
+        this.view.setupDisplayTurn(this.isWhiteTurn);
         this.view.rotate();
     }
 
@@ -82,47 +83,12 @@ public class Controller {
                 black++;
             }
         }
-        System.out.println("white: =" + white + "  " + "black: =" + black );
+        System.out.println("white:=" + white + "  " + "black:=" + black );
          if (white==0) {
-             popupOnWin("black win!!");
+             this.view.displayWin("black won!!");
          } else if (black==0) {
-             popupOnWin("white win!!");
+             this.view.displayWin("white won!!");
          }
-    }
-
-    protected void popupOnWin(String whoWon) {
-        Stage stage=new Stage();
-        stage.setTitle("You Won (or lost :( )");
-        GridPane gridpane = new GridPane();
-        gridpane.setAlignment(Pos.CENTER);
-        Label label = new Label(whoWon);
-        Popup popup = new Popup();
-        gridpane.setStyle("-fx-background-image: url(/assets/confetti_Texture.jpg); -fx-background-size: cover;");
-
-        label.setStyle(" -fx-background-color: white; -fx-font: 50 Arial");
-        label.setAlignment(Pos.BASELINE_CENTER);
-
-        popup.getContent().add(label);
-
-        // set size of label
-        label.setMinWidth(300);
-        label.setMinHeight(150);
-
-        Button button = new Button("Close");
-        button.setOnMouseClicked( e ->{
-            popup.show(stage);
-        });
-
-        // add button
-        gridpane.getChildren().add(button);
-
-        // create a scene
-        Scene scene = new Scene(gridpane, 600,500);
-
-        // set the scene
-        stage.setScene(scene);
-
-        stage.show();
     }
 
     protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
@@ -258,5 +224,8 @@ public class Controller {
         return this.selectedPiece;
     }
 
+    public boolean getisWhiteturn() {
+        return this.isWhiteTurn;
+    }
 
 }
