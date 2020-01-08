@@ -12,14 +12,15 @@ import java.util.Map;
 
 public class CheckerPiece {
 
-    protected Cylinder cylinder;
-    protected boolean isActive = false;
-    protected PhongMaterial material;
-    protected StackPane pane;
-    protected Point position;
-    protected double size;
-    protected Controller.Team team;
+    protected Cylinder cylinder; // Cylinder shape
+    protected StackPane cylinderContainer; // Cylinder container
+    protected boolean isActive = false; // Is this piece added to board?
+    protected PhongMaterial material; // Cylinder texture
+    protected Point position; // Current position of piece
+    protected double size; // Size of one field
+    protected Controller.Team team; // Team of this piece
 
+    // Setup pane, shape and material
     protected void setupPiece() {
         double radius = (this.size * 2) / 5;
 
@@ -36,10 +37,11 @@ public class CheckerPiece {
         this.cylinder.setRotate(90);
         this.cylinder.setTranslateZ(4);
 
-        this.pane = new StackPane();
-        this.pane.getChildren().add(this.cylinder);
+        this.cylinderContainer = new StackPane();
+        this.cylinderContainer.getChildren().add(this.cylinder);
     }
 
+    // Construct
     public CheckerPiece(double size, Controller.Team team) {
         this.size = size;
         this.team = team;
@@ -47,6 +49,7 @@ public class CheckerPiece {
         this.setupPiece();
     }
 
+    // Make sure piece is either highlighted or not
     public void assertHighlight(boolean shouldHighlight) {
         if (shouldHighlight) {
             this.cylinder.setMaterial(new PhongMaterial(Color.LIMEGREEN));
@@ -56,27 +59,35 @@ public class CheckerPiece {
         this.cylinder.setMaterial(this.getMaterial());
     }
 
+    // Detach and afterwards attach piece to given pane (black field)
     public void attachToField(StackPane pane, Point position, HashMap<Controller.Team, Integer> activeCount) {
+        // Detach
         this.detach(activeCount);
 
+        // Set new position
         this.position = position;
 
+        // Add to pane
         pane.getChildren().add(this.getPane());
 
+        // Justify activeCount if applicable
         if (!this.isActive) {
             int activeCountInt = activeCount.get(this.team);
             activeCountInt++;
             activeCount.put(this.team, activeCountInt);
         }
 
+        // Set active
         this.isActive = true;
     }
 
+    // Find position of given pane (black field) and run attachToField
     public void attachToFieldByPane(
         HashMap<Integer, HashMap<Integer, StackPane>> fields,
         StackPane pane,
         HashMap<Controller.Team, Integer> activeCount
     ) {
+        // Reverse lookup position by pane in fields HashMap
         for (Map.Entry<Integer, HashMap<Integer, StackPane>> hmap : fields.entrySet()) {
             int x = hmap.getKey();
 
@@ -93,6 +104,7 @@ public class CheckerPiece {
         }
     }
 
+    // Find pane (black field) by position and run attachToField
     public void attachToFieldByPosition(
         HashMap<Integer, HashMap<Integer, StackPane>> fields,
         Point position,
@@ -102,6 +114,7 @@ public class CheckerPiece {
         this.attachToField(pane, position, activeCount);
     }
 
+    // Detach from current field and set activeCount accordingly
     public void detach(HashMap<Controller.Team, Integer> activeCount) {
         Pane p = this.getPane();
         Object parent = p.getParent();
@@ -125,14 +138,15 @@ public class CheckerPiece {
     }
 
     public Pane getPane() {
-        return this.pane;
+        return this.cylinderContainer;
     }
 
     public Point getPosition() {
         return this.position;
     }
 
+    // Setup click event on piece
     public void setupEvent(Controller controller) {
-        this.pane.setOnMouseClicked(e -> controller.setSelectedPiece(this));
+        this.cylinderContainer.setOnMouseClicked(e -> controller.setSelectedPiece(this));
     }
 }
