@@ -5,12 +5,14 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -204,6 +206,17 @@ public class View extends Application {
         StackPane root = new StackPane();
 
         Button button = new Button("Close");
+        button.setStyle("-fx-padding: 8 15 15 15;\n" +
+                "    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;\n" +
+                "    -fx-background-radius: 8;\n" +
+                "    -fx-background-color: \n" +
+                "        linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),\n" +
+                "        #9d4024,\n" +
+                "        #d86e3a,\n" +
+                "        radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);\n" +
+                "    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );\n" +
+                "    -fx-font-weight: bold;\n" +
+                "    -fx-font-size: 60px;");
         button.setOnMouseClicked(e -> this.primaryStage.close());
 
         StackPane pane = new StackPane();
@@ -211,17 +224,21 @@ public class View extends Application {
         pane.setMinSize(View.POPUP_SIZE, View.POPUP_SIZE);
         pane.setMaxSize(View.POPUP_SIZE, View.POPUP_SIZE);
 
-        Label label = new Label(whoWon);
-        label.setAlignment(Pos.BASELINE_CENTER);
-        label.setMinWidth(300);
-        label.setMinHeight(150);
-        label.setStyle("-fx-font: 50 Arial");
+        DropShadow ds = new DropShadow();
+        ds.setOffsetY(3.0f);
+        ds.setColor(Color.color(0.4f, 0.4f, 0.4f));
+
+        Text text = new Text();
+        text.setEffect(ds);
+        text.setFill(Color.GOLDENROD);
+        text.setText(whoWon);
+        text.setStyle("-fx-font: 70px Arial");
 
         StackPane.setAlignment(pane, Pos.CENTER);
-        StackPane.setAlignment(label, Pos.TOP_CENTER);
+        StackPane.setAlignment(text, Pos.CENTER);
         StackPane.setAlignment(button, Pos.BOTTOM_CENTER);
 
-        pane.getChildren().addAll(label, button);
+        pane.getChildren().addAll(text, button);
         root.getChildren().add(pane);
 
         Scene scene = new Scene(root, View.WIDTH, View.HEIGHT);
