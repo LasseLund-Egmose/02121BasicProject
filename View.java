@@ -4,15 +4,12 @@ import javafx.geometry.Pos;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -87,8 +84,6 @@ public class View extends Application {
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
-        this.grid.setStyle(View.BACKGROUND_GRID + " -fx-background-size: cover;");
-
         this.grid.setPickOnBounds(false);
         this.grid.setStyle("-fx-effect: null;");
 
@@ -106,13 +101,12 @@ public class View extends Application {
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
         box.setPickOnBounds(false);
+        box.setStyle("-fx-effect: null;");
 
         //texture
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Marble_Texture.jpg")));
         box.setMaterial(material);
-
-        box.setStyle("-fx-effect: null;");
 
         StackPane.setAlignment(box, Pos.CENTER);
 
@@ -154,7 +148,6 @@ public class View extends Application {
         this.setupDisplayTurn(true);
 
         StackPane textbox = new StackPane();
-        textbox.setStyle("-fx-background-color: burlywood;");
         textbox.setMinHeight(80);
         textbox.setMinWidth(20);
         textbox.setMaxHeight(20);
