@@ -63,7 +63,6 @@ public class View extends Application {
 
         this.grid.add(field, i, j);
         field.setTranslateZ(0.01); // Bring field background to front
-        field.setStyle("-fx-effect: null;");
 
         this.controller.addField(new Point(i + 1, j + 1), field);
     }
