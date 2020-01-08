@@ -28,9 +28,7 @@ public class View extends Application {
     protected static final int WIDTH = 1000;
 
     protected static final String ASSET_GRID = "/assets/grid.png";
-
-    protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_wood.png);";
-    protected static final String BACKGROUND_GRID = "-fx-background-image: url(" + ASSET_GRID + ");";
+    protected static final String BACKGROUND_FIELD = "-fx-background-image: url(/assets/dark_wood.jpg);";
 
     protected Controller controller;
     protected int dimension = 8;
