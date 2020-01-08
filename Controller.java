@@ -19,14 +19,24 @@ public class Controller {
 
     protected int dimension;
     protected GridPane grid;
+    protected boolean isWhiteTurn = true;
     protected EventHandler<MouseEvent> moveClickEventHandler;
     protected CheckerPiece selectedPiece = null;
     protected View view;
-    protected boolean isWhiteTurn = true;
 
     enum Team {
         BLACK,
         WHITE
+    }
+
+    protected void checkForWin() {
+        if (this.activeCount.get(Team.BLACK) == 0) {
+            this.view.displayWin("White won");
+        }
+
+        if (this.activeCount.get(Team.WHITE) == 0) {
+            this.view.displayWin("Black won");
+        }
     }
 
     protected void doJumpMove(StackPane toPane, Point jumpedPosition) {
@@ -57,25 +67,6 @@ public class Controller {
         this.finishTurn();
     }
 
-    protected void finishTurn() {
-        this.isWhiteTurn = !this.isWhiteTurn;
-
-        checkForWin();
-
-        this.view.setupDisplayTurn(this.isWhiteTurn);
-        this.view.rotate();
-    }
-
-    protected void checkForWin() {
-        if (this.activeCount.get(Team.BLACK) == 0) {
-            this.view.displayWin("White won");
-        }
-
-        if (this.activeCount.get(Team.WHITE) == 0) {
-            this.view.displayWin("Black won");
-        }
-    }
-
     protected Object eligibleJumpMoveOrNull(CheckerPiece thisPiece, Point opponentPosition) {
         Point thisPos = thisPiece.getPosition();
         Point diff = new Point(opponentPosition.x - thisPos.x, opponentPosition.y - thisPos.y);
@@ -84,6 +75,15 @@ public class Controller {
         newPos.translate(diff.x, diff.y);
 
         return this.isPositionValid(newPos) ? fields.get(newPos.x).get(newPos.y) : null;
+    }
+
+    protected void finishTurn() {
+        this.isWhiteTurn = !this.isWhiteTurn;
+
+        checkForWin();
+
+        this.view.setupDisplayTurn(this.isWhiteTurn);
+        this.view.rotate();
     }
 
     protected void highlightEligibleFields(CheckerPiece piece) {
@@ -126,7 +126,6 @@ public class Controller {
         }
 
         StackPane clickedElementPane = (StackPane) clickedElement;
-
 
         if (this.possibleJumpMoves.containsKey(clickedElement)) {
             this.doJumpMove(clickedElementPane, this.possibleJumpMoves.get(clickedElement));
@@ -196,6 +195,10 @@ public class Controller {
         this.fields.get(p.x).put(p.y, pane);
     }
 
+    public CheckerPiece getSelectedPiece() {
+        return this.selectedPiece;
+    }
+
     public void setSelectedPiece(CheckerPiece piece) {
         if (this.selectedPiece != null) {
             this.selectedPiece.assertHighlight(false);
@@ -211,9 +214,5 @@ public class Controller {
 
         this.normalizeFields();
         this.selectedPiece = null;
-    }
-
-    public CheckerPiece getSelectedPiece() {
-        return this.selectedPiece;
     }
 }

@@ -12,15 +12,23 @@ import java.util.Map;
 
 public class CheckerPiece {
 
+    protected Cylinder cylinder;
+    protected boolean isActive = false;
+    protected PhongMaterial material;
     protected StackPane pane;
     protected Point position;
     protected double size;
     protected Controller.Team team;
-    protected Cylinder cylinder;
-    protected boolean isActive = false;
 
     protected void setupPiece() {
         double radius = (this.size * 2) / 5;
+
+        this.material = new PhongMaterial();
+        this.material.setDiffuseMap(
+            new Image(getClass().getResourceAsStream(
+                team == Controller.Team.BLACK ? "/assets/piece_black.jpg" : "/assets/piece_white.jpg"
+            ))
+        );
 
         this.cylinder = new Cylinder(radius, radius / 1.5);
         this.cylinder.setMaterial(this.getMaterial());
@@ -113,13 +121,7 @@ public class CheckerPiece {
     }
 
     public PhongMaterial getMaterial() {
-        PhongMaterial materialDark = new PhongMaterial();
-        materialDark.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/piece_black.jpg")));
-
-        PhongMaterial materialLight = new PhongMaterial();
-        materialLight.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/piece_white.jpg")));
-
-        return team == Controller.Team.BLACK ? materialDark : materialLight;
+        return this.material;
     }
 
     public Pane getPane() {

@@ -32,23 +32,16 @@ public class View extends Application {
 
     protected Controller controller;
     protected int dimension = 8;
+    protected Text displayTurn;
     protected GridPane grid;
     protected Pane surfacePane;
     protected RotateTransition surfacePaneRotation;
-    protected Text displayTurn;
     protected Stage primaryStage;
 
-    public double getSize() {
-        return ((double) View.BOARD_SIZE) / this.dimension;
-    }
+    public static void main(String[] args) {
+        View.args = args;
 
-    public void highlightPane(StackPane pane) {
-        int borderWidth = this.getSize() < 20 ? 2 : 5;
-        pane.setStyle(View.BACKGROUND_FIELD + " -fx-border-color: green; -fx-border-width: " + borderWidth + ";");
-    }
-
-    public void normalizePane(StackPane pane) {
-        pane.setStyle(View.BACKGROUND_FIELD);
+        launch(args);
     }
 
     protected void setupField(int i, int j) {
@@ -123,79 +116,8 @@ public class View extends Application {
         this.setupGrid();
     }
 
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-
-        // Handle n-argument
-        if (View.args.length == 1) {
-            int newN = Integer.parseInt(View.args[0]);
-
-            if (newN >= 3 && newN <= 100) {
-                this.dimension = newN;
-            }
-        }
-
-        StackPane root = new StackPane();
-        root.setMinSize(View.WIDTH, View.HEIGHT);
-        root.setMaxSize(View.WIDTH, View.HEIGHT);
-
-
-        this.displayTurn = new Text();
-        this.displayTurn.setStyle("-fx-font: 50 Arial;");
-        this.displayTurn.setFill(Color.BLACK);
-
-        this.setupDisplayTurn(true);
-
-        StackPane textbox = new StackPane();
-        textbox.setMinHeight(80);
-        textbox.setMinWidth(20);
-        textbox.setMaxHeight(20);
-        textbox.setMaxWidth(300);
-        textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
-        textbox.getChildren().add(this.displayTurn);
-
-        primaryStage.setTitle("Checkers");
-
-        Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
-        background.setFill(Color.web("antiquewhite"));
-        background.setTranslateZ(500);
-
-        StackPane boardContainer = new StackPane();
-        boardContainer.setPrefSize(View.WIDTH, View.HEIGHT);
-
-        boardContainer.setRotationAxis(Rotate.X_AXIS);
-        boardContainer.setRotate(-50);
-        boardContainer.setPickOnBounds(false);
-        boardContainer.setStyle("-fx-effect: null;");
-
-        this.setupSurface();
-
-        boardContainer.getChildren().add(this.surfacePane);
-
-        root.getChildren().addAll(background, boardContainer, textbox);
-        root.setPickOnBounds(false); // Pass through click events
-        root.setStyle("-fx-effect: null;");
-
-        StackPane.setAlignment(background, Pos.CENTER);
-        StackPane.setAlignment(textbox, Pos.TOP_CENTER);
-        StackPane.setAlignment(this.surfacePane, Pos.CENTER);
-        StackPane.setAlignment(this.displayTurn, Pos.CENTER);
-
-        this.controller = new Controller(this, this.dimension, this.grid);
-
-        this.setupFields();
-
-        this.controller.setupPieces();
-
-        Scene scene = new Scene(root, View.WIDTH, View.HEIGHT, true, null);
-        scene.setCamera(new PerspectiveCamera());
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public void setupDisplayTurn(boolean isWhiteTurn) {
-        this.displayTurn.setText(isWhiteTurn ? "White's turn" : "Black's turn");
+    public double getSize() {
+        return ((double) View.BOARD_SIZE) / this.dimension;
     }
 
     public void displayWin(String whoWon) {
@@ -228,14 +150,87 @@ public class View extends Application {
         this.primaryStage.show();
     }
 
+    public void highlightPane(StackPane pane) {
+        int borderWidth = this.getSize() < 20 ? 2 : 5;
+        pane.setStyle(View.BACKGROUND_FIELD + " -fx-border-color: green; -fx-border-width: " + borderWidth + ";");
+    }
+
+    public void normalizePane(StackPane pane) {
+        pane.setStyle(View.BACKGROUND_FIELD);
+    }
+
+    public void setupDisplayTurn(boolean isWhiteTurn) {
+        this.displayTurn.setText(isWhiteTurn ? "White's turn" : "Black's turn");
+    }
+
     public void rotate() {
         this.surfacePaneRotation.play();
     }
 
-    public static void main(String[] args) {
-        View.args = args;
+    public void start(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("Checkers");
 
-        launch(args);
+        // Handle n-argument
+        if (View.args.length == 1) {
+            int newN = Integer.parseInt(View.args[0]);
+
+            if (newN >= 3 && newN <= 100) {
+                this.dimension = newN;
+            }
+        }
+
+        StackPane root = new StackPane();
+        root.setMinSize(View.WIDTH, View.HEIGHT);
+        root.setMaxSize(View.WIDTH, View.HEIGHT);
+
+        this.displayTurn = new Text();
+        this.displayTurn.setStyle("-fx-font: 50 Arial;");
+        this.displayTurn.setFill(Color.BLACK);
+        this.setupDisplayTurn(true);
+
+        StackPane textbox = new StackPane();
+        textbox.setMinHeight(80);
+        textbox.setMinWidth(20);
+        textbox.setMaxHeight(20);
+        textbox.setMaxWidth(300);
+        textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
+        textbox.getChildren().add(this.displayTurn);
+
+        Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
+        background.setFill(Color.web("antiquewhite"));
+        background.setTranslateZ(500); //TODO: Calculate
+
+        StackPane boardContainer = new StackPane();
+        boardContainer.setPrefSize(View.WIDTH, View.HEIGHT);
+        boardContainer.setRotationAxis(Rotate.X_AXIS);
+        boardContainer.setRotate(-50);
+        boardContainer.setPickOnBounds(false);
+        boardContainer.setStyle("-fx-effect: null;");
+
+        this.setupSurface();
+
+        boardContainer.getChildren().add(this.surfacePane);
+
+        root.getChildren().addAll(background, boardContainer, textbox);
+        root.setPickOnBounds(false); // Pass through click events
+        root.setStyle("-fx-effect: null;");
+
+        StackPane.setAlignment(background, Pos.CENTER);
+        StackPane.setAlignment(textbox, Pos.TOP_CENTER);
+        StackPane.setAlignment(this.surfacePane, Pos.CENTER);
+        StackPane.setAlignment(this.displayTurn, Pos.CENTER);
+
+        this.controller = new Controller(this, this.dimension, this.grid);
+
+        this.setupFields();
+
+        this.controller.setupPieces();
+
+        Scene scene = new Scene(root, View.WIDTH, View.HEIGHT, true, null);
+        scene.setCamera(new PerspectiveCamera());
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
-
 }
