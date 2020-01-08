@@ -4,15 +4,12 @@ import javafx.geometry.Pos;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -87,9 +84,8 @@ public class View extends Application {
         this.grid.setRotationAxis(Rotate.X_AXIS);
         this.grid.setRotate(180);
 
-        this.grid.setStyle(View.BACKGROUND_GRID + " -fx-background-size: cover;");
-
         this.grid.setPickOnBounds(false);
+        this.grid.setStyle("-fx-effect: null;");
 
         this.surfacePane.getChildren().add(this.grid);
     }
@@ -97,6 +93,7 @@ public class View extends Application {
     protected void setupSurface() {
         this.surfacePane = new StackPane();
         this.surfacePane.setPickOnBounds(false);
+        this.surfacePane.setStyle("-fx-effect: null;");
 
         // Setup board surface
         Box box = new Box();
@@ -104,6 +101,7 @@ public class View extends Application {
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
         box.setPickOnBounds(false);
+        box.setStyle("-fx-effect: null;");
 
         //texture
         PhongMaterial material = new PhongMaterial();
@@ -150,7 +148,6 @@ public class View extends Application {
         this.setupDisplayTurn(true);
 
         StackPane textbox = new StackPane();
-        textbox.setStyle("-fx-background-color: burlywood;");
         textbox.setMinHeight(80);
         textbox.setMinWidth(20);
         textbox.setMaxHeight(20);
@@ -170,6 +167,7 @@ public class View extends Application {
         boardContainer.setRotationAxis(Rotate.X_AXIS);
         boardContainer.setRotate(-50);
         boardContainer.setPickOnBounds(false);
+        boardContainer.setStyle("-fx-effect: null;");
 
         this.setupSurface();
 
@@ -177,6 +175,7 @@ public class View extends Application {
 
         root.getChildren().addAll(background, boardContainer, textbox);
         root.setPickOnBounds(false); // Pass through click events
+        root.setStyle("-fx-effect: null;");
 
         StackPane.setAlignment(background, Pos.CENTER);
         StackPane.setAlignment(textbox, Pos.TOP_CENTER);
