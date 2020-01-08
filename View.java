@@ -3,18 +3,17 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import sun.plugin2.util.ColorUtil;
 
 import java.awt.*;
 
@@ -46,15 +45,15 @@ public class View extends Application {
     }
 
     protected void setupField(int i, int j) {
-        StackPane drop = new StackPane();
-        drop.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
+        StackPane field = new StackPane();
+        field.setStyle("-fx-background-image: url(/assets/dark_Wood_Texture.jpg)");
 
-        drop.setPrefSize(this.getSize(), this.getSize());
+        field.setPrefSize(this.getSize(), this.getSize());
 
-        this.grid.add(drop, i, j);
-        drop.setTranslateZ(1);
+        this.grid.add(field, i, j);
+        field.setTranslateZ(0.01); // Bring field background to front
 
-        this.controller.addField(new Point(i + 1, j + 1), drop);
+        this.controller.addField(new Point(i + 1, j + 1), field);
     }
 
     protected void setupFields() {
@@ -78,6 +77,8 @@ public class View extends Application {
         this.grid.setRotate(180);
 
         this.grid.setStyle("-fx-background-image: url(/assets/light_Marble_Texture.jpg); -fx-background-size: cover;");
+
+        this.grid.setPickOnBounds(false);
         
         this.surfacePane.getChildren().add(this.grid);
 
@@ -85,13 +86,14 @@ public class View extends Application {
 
     protected void setupSurface() {
         this.surfacePane = new StackPane();
-
+        this.surfacePane.setPickOnBounds(false);
 
         // Setup board surface
         Box box = new Box();
         box.setWidth(View.BOARD_SIZE);
         box.setHeight(View.BOARD_SIZE);
         box.setDepth(View.DEPTH);
+        box.setPickOnBounds(false);
 
         //texture
         PhongMaterial material = new PhongMaterial();
@@ -128,7 +130,7 @@ public class View extends Application {
         StackPane root = new StackPane();
         root.setMinSize(View.WIDTH, View.HEIGHT);
         root.setMaxSize(View.WIDTH, View.HEIGHT);
-        root.setStyle("-fx-background-color: antiquewhite; -fx-background-size: cover;");
+        // root.setStyle("-fx-background-color: antiquewhite;");
 
         Text text = new Text("Dummy text");
         text.setStyle("-fx-font: 50 Arial;");
@@ -141,28 +143,33 @@ public class View extends Application {
         textbox.setMaxHeight(20);
         textbox.setMaxWidth(300);
         textbox.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
+        textbox.getChildren().add(text);
 
 
         primaryStage.setTitle("Checkers");
-        StackPane stackpane = new StackPane();
-        stackpane.setPrefSize(View.WIDTH, View.HEIGHT);
 
-        stackpane.setRotationAxis(Rotate.X_AXIS);
-        stackpane.setRotate(-50);
+        Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
+        background.setFill(Color.web("antiquewhite"));
+        background.setTranslateZ(500);
 
+        StackPane boardContainer = new StackPane();
+        boardContainer.setPrefSize(View.WIDTH, View.HEIGHT);
+
+        boardContainer.setRotationAxis(Rotate.X_AXIS);
+        boardContainer.setRotate(-50);
+        boardContainer.setPickOnBounds(false);
 
         this.setupSurface();
 
-        stackpane.getChildren().add(this.surfacePane);
-        textbox.getChildren().addAll(text);
-        root.getChildren().addAll(stackpane,textbox);
-        root.setTranslateZ(500);
-        stackpane.setTranslateZ(-500);
+        boardContainer.getChildren().add(this.surfacePane);
 
+        root.getChildren().addAll(background, boardContainer, textbox);
+        root.setPickOnBounds(false); // Pass through click events
 
+        StackPane.setAlignment(background, Pos.CENTER);
         StackPane.setAlignment(textbox, Pos.TOP_CENTER);
         StackPane.setAlignment(this.surfacePane, Pos.CENTER);
-        textbox.setAlignment(text, Pos.CENTER);
+        StackPane.setAlignment(text, Pos.CENTER);
 
         this.controller = new Controller(this, this.n, this.grid);
 
@@ -171,11 +178,7 @@ public class View extends Application {
         this.controller.setupPieces();
 
         Scene scene = new Scene(root, View.WIDTH, View.HEIGHT, true, null);
-        PerspectiveCamera pc = new PerspectiveCamera();
-        pc.setNearClip(0.1);
-        pc.setFarClip(500000);
-
-        scene.setCamera(pc);
+        scene.setCamera(new PerspectiveCamera());
 
         primaryStage.setScene(scene);
         primaryStage.show();
