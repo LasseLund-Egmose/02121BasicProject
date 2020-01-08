@@ -63,6 +63,7 @@ public class View extends Application {
 
         this.grid.add(field, i, j);
         field.setTranslateZ(0.01); // Bring field background to front
+        field.setStyle("-fx-effect: null;");
 
         this.controller.addField(new Point(i + 1, j + 1), field);
     }
@@ -90,6 +91,7 @@ public class View extends Application {
         this.grid.setStyle(View.BACKGROUND_GRID + " -fx-background-size: cover;");
 
         this.grid.setPickOnBounds(false);
+        this.grid.setStyle("-fx-effect: null;");
 
         this.surfacePane.getChildren().add(this.grid);
     }
@@ -97,6 +99,7 @@ public class View extends Application {
     protected void setupSurface() {
         this.surfacePane = new StackPane();
         this.surfacePane.setPickOnBounds(false);
+        this.surfacePane.setStyle("-fx-effect: null;");
 
         // Setup board surface
         Box box = new Box();
@@ -109,6 +112,8 @@ public class View extends Application {
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseMap(new Image(getClass().getResourceAsStream("/assets/light_Marble_Texture.jpg")));
         box.setMaterial(material);
+
+        box.setStyle("-fx-effect: null;");
 
         StackPane.setAlignment(box, Pos.CENTER);
 
@@ -170,6 +175,7 @@ public class View extends Application {
         boardContainer.setRotationAxis(Rotate.X_AXIS);
         boardContainer.setRotate(-50);
         boardContainer.setPickOnBounds(false);
+        boardContainer.setStyle("-fx-effect: null;");
 
         this.setupSurface();
 
@@ -177,6 +183,7 @@ public class View extends Application {
 
         root.getChildren().addAll(background, boardContainer, textbox);
         root.setPickOnBounds(false); // Pass through click events
+        root.setStyle("-fx-effect: null;");
 
         StackPane.setAlignment(background, Pos.CENTER);
         StackPane.setAlignment(textbox, Pos.TOP_CENTER);
