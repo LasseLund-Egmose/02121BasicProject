@@ -25,7 +25,7 @@ public class Controller {
     protected View view; // Reference to view instance
 
     // Team enum
-    enum Team {
+    public enum Team {
         BLACK,
         WHITE
     }
@@ -179,12 +179,6 @@ public class Controller {
         this.checkerPieces.add(piece);
     }
 
-    // Setup a piece in each corner
-    protected void setupPieces() {
-        this.setupPiece(new Point(1, 1), Team.WHITE);
-        this.setupPiece(new Point(this.dimension, this.dimension), Team.BLACK);
-    }
-
     // Get diagonally surrounding fields (within board boundaries) from a given position
     protected ArrayList<Point> surroundingFields(Point p) {
         ArrayList<Point> eligiblePoints = new ArrayList<>();
@@ -240,7 +234,7 @@ public class Controller {
         }
 
         // Select piece if turn matches the piece's team
-        if (this.selectedPiece != piece && isWhiteTurn == (piece.team == Team.WHITE)) {
+        if (this.selectedPiece != piece && isWhiteTurn == (piece.getTeam() == Team.WHITE)) {
             this.selectedPiece = piece;
             this.selectedPiece.assertHighlight(true);
 
@@ -252,5 +246,11 @@ public class Controller {
         // Remove highlight and reset selectedPiece
         this.normalizeFields();
         this.selectedPiece = null;
+    }
+
+    // Setup a piece in each corner
+    public void setupPieces() {
+        this.setupPiece(new Point(1, 1), Team.WHITE);
+        this.setupPiece(new Point(this.dimension, this.dimension), Team.BLACK);
     }
 }

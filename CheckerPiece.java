@@ -145,6 +145,10 @@ public class CheckerPiece {
         return this.position;
     }
 
+    public Controller.Team getTeam() {
+        return this.team;
+    }
+
     // Setup click event on piece
     public void setupEvent(Controller controller) {
         this.cylinderContainer.setOnMouseClicked(e -> controller.setSelectedPiece(this));
