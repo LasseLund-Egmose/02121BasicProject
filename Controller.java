@@ -256,7 +256,7 @@ public class Controller {
     public void setupFields() {
         for (int i = 0; i < this.dimension; i++) {
             for (int j = i % 2; j < this.dimension; j += 2) {
-                this.setupField(new Point(i + 1, j + 1));
+                this.setupField(new Point(j + 1, i + 1));
             }
         }
     }
