@@ -169,7 +169,7 @@ public class Controller {
 
     // Create a piece by team and attach it to given position
     protected void setupPiece(Point position, Team team) {
-        CheckerPiece piece = new CheckerPiece(this.view.getSize(), team);
+        CheckerPiece piece = new CheckerPiece(this.view.getFieldSize(), team);
 
         Field field = this.fields.get(position.x).get(position.y);
 

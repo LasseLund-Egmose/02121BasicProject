@@ -66,6 +66,7 @@ public class CheckerPiece {
         // Add to field
         field.getChildren().add(this.getPane());
 
+        // Setup references between piece and field
         this.parent = field;
         field.setAttachedPiece(this);
 

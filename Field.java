@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class Field extends StackPane {
 
-    protected CheckerPiece attachedPiece = null;
-    protected Point position = null;
+    protected CheckerPiece attachedPiece = null; // Reference to piece in field (if any)
+    protected Point position; // The field's position
 
     public CheckerPiece getAttachedPiece() {
         return this.attachedPiece;
