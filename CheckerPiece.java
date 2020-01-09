@@ -16,6 +16,7 @@ public class CheckerPiece {
     protected StackPane cylinderContainer; // Cylinder container
     protected boolean isActive = false; // Is this piece added to board?
     protected PhongMaterial material; // Cylinder texture
+    protected Pane parent = null; // Parent containing cylinderContainer
     protected Point position; // Current position of piece
     protected double size; // Size of one field
     protected Controller.Team team; // Team of this piece
@@ -70,6 +71,7 @@ public class CheckerPiece {
 
         // Add to pane
         pane.getChildren().add(this.getPane());
+        this.parent = pane;
 
         // Justify activeCount if applicable
         if (!this.isActive) {
@@ -117,12 +119,8 @@ public class CheckerPiece {
 
     // Detach from current field and set activeCount accordingly
     public void detach(HashMap<Controller.Team, Integer> activeCount) {
-        Pane p = this.getPane();
-        Object parent = p.getParent();
-
-        if (parent instanceof StackPane) {
-            StackPane parentPane = (StackPane) parent;
-            parentPane.getChildren().remove(p);
+        if (this.parent != null) {
+            this.parent.getChildren().clear();
         }
 
         if (this.isActive) {
