@@ -234,6 +234,7 @@ public class Controller {
     public void setSelectedPiece(CheckerPiece piece) {
         // Remove highlight from currently selected piece
         if (this.selectedPiece != null) {
+            this.normalizeFields();
             this.selectedPiece.assertHighlight(false);
         }
 
@@ -247,8 +248,7 @@ public class Controller {
             return;
         }
 
-        // Remove highlight and reset selectedPiece
-        this.normalizeFields();
+        // Reset selectedPiece
         this.selectedPiece = null;
     }
 
