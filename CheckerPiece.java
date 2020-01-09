@@ -84,6 +84,7 @@ public class CheckerPiece {
     public void detach(HashMap<Controller.Team, Integer> activeCount) {
         if (this.parent != null) {
             this.parent.getChildren().clear();
+            this.parent.setAttachedPiece(null);
             this.parent = null;
         }
 
