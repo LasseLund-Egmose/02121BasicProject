@@ -13,7 +13,7 @@ public class Controller {
 
     protected HashMap<Team, Integer> activeCount = new HashMap<>(); // A map (Team -> int) of number of active pieces on each team
 
-    protected HashMap<Field, Point> possibleJumpMoves = new HashMap<>(); // A map (pane -> jumped position) of all possible jump moves
+    protected HashMap<Field, Field> possibleJumpMoves = new HashMap<>(); // A map (pane -> jumped pane) of all possible jump moves
     protected ArrayList<Field> possibleRegularMoves = new ArrayList<>(); // A list of all possible regular moves
 
     protected int dimension; // Dimension of board
@@ -41,17 +41,9 @@ public class Controller {
     }
 
     // Handle a jump move
-    protected void doJumpMove(Field toField, Point jumpedPosition) {
+    protected void doJumpMove(Field toField, Field jumpedField) {
         // Detach (remove) jumped CheckerPiece
-        for (CheckerPiece piece : this.checkerPieces) {
-            if (!piece.getPosition().equals(jumpedPosition)) {
-                continue;
-            }
-
-            piece.detach(this.activeCount);
-
-            break;
-        }
+        jumpedField.getAttachedPiece().detach(this.activeCount);
 
         // Handle rest of move as a regular move
         this.doRegularMove(toField);
@@ -113,7 +105,7 @@ public class Controller {
                     // Handle jump move if not null (e.g. instance of Field)
                     Field eligibleJumpMoveField = (Field) eligibleJumpMove;
 
-                    this.possibleJumpMoves.put(eligibleJumpMoveField, p);
+                    this.possibleJumpMoves.put(eligibleJumpMoveField, field);
                     this.view.highlightPane(eligibleJumpMoveField);
                 }
             } else { // Else allow a regular move
