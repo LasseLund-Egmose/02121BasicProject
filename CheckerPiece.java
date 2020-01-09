@@ -23,6 +23,7 @@ public class CheckerPiece {
     // Setup pane, shape and material
     protected void setupPiece() {
         double radius = (this.size * 2) / 5;
+        double height = radius / 1.5;
 
         this.material = new PhongMaterial();
         this.material.setDiffuseMap(
@@ -31,11 +32,11 @@ public class CheckerPiece {
             ))
         );
 
-        this.cylinder = new Cylinder(radius, radius / 1.5);
+        this.cylinder = new Cylinder(radius, height);
         this.cylinder.setMaterial(this.getMaterial());
         this.cylinder.setRotationAxis(Rotate.X_AXIS);
         this.cylinder.setRotate(90);
-        this.cylinder.setTranslateZ(4);
+        this.cylinder.setTranslateZ(height / 2);
 
         this.cylinderContainer = new StackPane();
         this.cylinderContainer.getChildren().add(this.cylinder);
