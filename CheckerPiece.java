@@ -38,6 +38,7 @@ public class CheckerPiece {
         this.cylinder.setTranslateZ(height / 2);
 
         this.cylinderContainer.getChildren().add(this.cylinder);
+        this.cylinderContainer.setTranslateZ(100); // Stretched element view
     }
 
     // Construct

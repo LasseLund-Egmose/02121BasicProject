@@ -63,7 +63,7 @@ public class View extends Application {
         this.grid.setMinWidth(View.BOARD_SIZE);
         this.grid.setMaxHeight(View.BOARD_SIZE);
         this.grid.setMaxWidth(View.BOARD_SIZE);
-        this.grid.setTranslateZ(-View.DEPTH / 2.0);
+        this.grid.setTranslateZ(-View.DEPTH / 2.0 - 100);
 
         // Invert y-axis leaving position (1,1) at bottom-left
         this.grid.setRotationAxis(Rotate.X_AXIS);
@@ -71,7 +71,7 @@ public class View extends Application {
 
         // Pass through click events and remove shadow
         this.grid.setPickOnBounds(false);
-        this.grid.setStyle("-fx-effect: null;");
+        this.grid.setStyle("-fx-effect: null; -fx-background-color: green;");
 
         // Add grid to board
         this.surfacePane.getChildren().add(this.grid);
@@ -81,7 +81,7 @@ public class View extends Application {
     protected void setupSurface() {
         this.surfacePane = new StackPane();
         this.surfacePane.setPickOnBounds(false);
-        this.surfacePane.setStyle("-fx-effect: null;");
+        this.surfacePane.setStyle("-fx-effect: null; -fx-background-color: red"); // Stretched element view
 
         // Setup box below board surface
         Box box = new Box();
@@ -183,6 +183,7 @@ public class View extends Application {
 
         // Bring field background to front
         field.setTranslateZ(0.01);
+        field.setTranslateZ(100);
     }
 
     // Handle dimension argument and setup View elements
@@ -218,6 +219,7 @@ public class View extends Application {
         displayTurnContainer.setStyle("-fx-border-color: gray; -fx-border-width: 4;");
         displayTurnContainer.getChildren().add(this.displayTurn);
         displayTurnContainer.setTranslateZ(-View.zOffset());
+        displayTurnContainer.setTranslateY(-100); // Stretched element view
 
         // Setup background and move it behind the board
         Rectangle background = new Rectangle(View.WIDTH * 2, View.HEIGHT * 2);
@@ -261,7 +263,14 @@ public class View extends Application {
 
         // Setup camera for scene
         PerspectiveCamera pc = new PerspectiveCamera();
-        pc.setTranslateZ(-View.zOffset());
+
+        // Stretched element view
+        pc.setTranslateX(1000);
+        pc.setTranslateZ(-1600);
+        pc.setRotationAxis(Rotate.Y_AXIS);
+        pc.setRotate(-45);
+
+
         scene.setCamera(pc);
 
         // Display stage
