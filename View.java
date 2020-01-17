@@ -208,7 +208,6 @@ public class View extends Application {
         this.displayTurn = new Text();
         this.displayTurn.setStyle("-fx-font: 50 Arial;");
         this.displayTurn.setFill(Color.BLACK);
-        this.setupDisplayTurn(true);
 
         StackPane displayTurnContainer = new StackPane();
         displayTurnContainer.setMinHeight(80);

@@ -18,7 +18,7 @@ public class Controller {
 
     protected int dimension; // Dimension of board
     protected GridPane grid;
-    protected boolean isWhiteTurn = true; // Keep track of turn
+    protected boolean isWhiteTurn = false; // Keep track of turn
     protected EventHandler<MouseEvent> moveClickEventHandler; // EventHandler for click events on black fields
     protected CheckerPiece selectedPiece = null; // Keep track of selected piece
     protected View view; // Reference to view instance
@@ -215,6 +215,8 @@ public class Controller {
 
         this.activeCount.put(Team.BLACK, 0);
         this.activeCount.put(Team.WHITE, 0);
+
+        this.view.setupDisplayTurn(this.isWhiteTurn);
     }
 
     // Get selected piece
@@ -255,7 +257,7 @@ public class Controller {
 
     // Setup a piece in each corner
     public void setupPieces() {
-        this.setupPiece(new Point(1, 1), Team.WHITE);
-        this.setupPiece(new Point(this.dimension, this.dimension), Team.BLACK);
+        this.setupPiece(new Point(1, 1), Team.BLACK);
+        this.setupPiece(new Point(this.dimension, this.dimension), Team.WHITE);
     }
 }
